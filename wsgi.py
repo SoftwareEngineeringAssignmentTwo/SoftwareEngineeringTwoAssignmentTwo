@@ -19,14 +19,30 @@ migrate = get_migrate(app)
 @app.cli.command("init", help="Creates and initializes the database")
 def init():
     initialize()
-    bob = User(username='bob', password='bobpass')
-    sally = User(username='sally', password='sallypass')
-    rob = User(username='rob', password='robpass')
     
-    # Add users to database session and commit
-    db.session.add_all([bob, sally, rob])
+    # Check if users already exist before creating them
+    if not User.query.filter_by(username='bob').first():
+        bob = User(username='bob', password='bobpass')
+        db.session.add(bob)
+        print('Created user: bob')
+    else:
+        print('User bob already exists')
+        
+    if not User.query.filter_by(username='sally').first():
+        sally = User(username='sally', password='sallypass')
+        db.session.add(sally)
+        print('Created user: sally')
+    else:
+        print('User sally already exists')
+        
+    if not User.query.filter_by(username='rob').first():
+        rob = User(username='rob', password='robpass')
+        db.session.add(rob)
+        print('Created user: rob')
+    else:
+        print('User rob already exists')
+    
     db.session.commit()
-    
     print('database intialized')
 
 '''

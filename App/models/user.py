@@ -1,5 +1,7 @@
+from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
+import uuid
 
 class User(db.Model):
     userID = db.Column(db.Integer, primary_key=True)
@@ -46,20 +48,22 @@ class Student(User):
     points = db.Column(db.Integer, nullable=False, default=0)
 
     def requestConfirmationOfHours(activityLogID: str) -> None:
-        # Logic for requesting confirmation of hours
-        pass
+        activity_log = ActivityLog.query.filter_by(logID=activityLogID, studentID=self.studentID).first()
+        if activity_log:
+            activity_log.status = "pending"
+            db.session.commit()
 
     def viewLeaderboard() -> list:
-        # Logic for viewing the leaderboard
-        pass
+        return LeaderBoardEntry.query.filter_by(studentID=self.studentID).all()
 
     def viewAccolades() -> list:
-        # Logic for viewing accolades
-        pass
+        return Accolade.query.filter_by(studentID=self.studentID).all()
 
     def logHours(hours: int, description: str) -> ActivityLog:
-        # Logic for logging hours
-        pass
+        new_log = ActivityLog.createLog(self.studentID, hours, description)
+        db.session.add(new_log)
+        db.session.commit()
+        return new_log
 
 class Accolade(db.Model):
     accoladeID = db.Column(db.String, primary_key=True)
@@ -77,24 +81,39 @@ class Accolade(db.Model):
 
     @staticmethod
     def createAccolade(name: str, milestone: int) -> 'Accolade':
-        # Logic for creating an accolade
-        pass
+        new_accolade = Accolade(
+            accoladeID=str(uuid.uuid4()),
+            studentID=None,
+            name=name,
+            milestoneHours=milestone,
+            dateAwarded=datetime.utcnow()
+        )
+        db.session.add(new_accolade)
+        db.session.commit()
+        return new_accolade
 
     @staticmethod
     def awardAccolade(studentID: str, accoladeID: str) -> None:
-        # Logic for awarding an accolade
-        pass
+        accolade = Accolade.query.filter_by(accoladeID=accoladeID).first()
+        if accolade:
+            accolade.studentID = studentID
+            accolade.dateAwarded = datetime.utcnow()
+            db.session.commit()
 
 class Staff(User):
     staffID = db.Column(db.String, primary_key=True)
 
     def confirmHours(activityLogID: str) -> None:
-        # Logic for confirming hours
-        pass
+        activity_log = ActivityLog.query.filter_by(logID=activityLogID).first()
+        if activity_log and activity_log.status == "pending":
+            activity_log.status = "confirmed"
+            student = Student.query.filter_by(studentID=activity_log.studentID).first()
+            if student:
+                student.totalHours += activity_log.hoursLogged
+                db.session.commit()
 
     def viewLeaderboard() -> list:
-        # Logic for viewing the leaderboard
-        pass
+        return LeaderBoardEntry.query.filter_by(staffID=self.staffID).all()
 
 class ActivityLog(db.Model):
     logID = db.Column(db.String, primary_key=True)
@@ -112,8 +131,16 @@ class ActivityLog(db.Model):
     
     @staticmethod
     def createLog(studentID: str, hours: int, description: str) -> 'ActivityLog':
-        # Logic for creating a new activity log
-        pass
+        new_log = ActivityLog(
+            logID=str(uuid.uuid4()),
+            studentID=studentID,
+            hoursLogged=hours,
+            dateLogged=datetime.utcnow(),
+            status="pending"
+        )
+        db.session.add(new_log)
+        db.session.commit()
+        return new_log
 
     def updateStatus(newStatus: str) -> None:
         self.status = newStatus
@@ -136,8 +163,9 @@ class LeaderBoardEntry(db.Model):
         self.totalAccolades = totalAccolades
 
     def updateEntry(student: Student) -> None:
-        # Logic for updating the leaderboard entry
-        pass
+        self.totalHours = student.totalHours
+        self.totalAccolades = len(student.viewAccolades())
+        db.session.commit()
 
     def getRank() -> int:
         return self.rank

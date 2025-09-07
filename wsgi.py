@@ -6,6 +6,7 @@ from App.database import db, get_migrate
 from App.models import User
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize )
+from App.models.user import *
 
 
 # This commands file allow you to create convenient CLI commands for testing controllers
@@ -19,8 +20,8 @@ def init():
     initialize()
     bob = User(username='bob', password='bobpass')
     sally = User(username='sally', password='sallypass')
-    Larry = User(username='larry', password='larrypass')
-    db.session.add_all([bob, sally, Larry])
+    larry = User(username='larry', password='larrypass')
+    db.session.add_all([bob, sally, larry])
     db.session.commit()
     print('database intialized')
 
@@ -33,27 +34,36 @@ User Commands
 @click.argument("hours")
 @click.argument("activity")
 def log_hours_command(student_id, hours, activity):
-    # Logic for logging hours
-    pass
+    student = Student.query.filter_by(studentID=student_id).first()
+    if student:
+        student.logHours(int(hours), activity)
 
 @app.cli.command("request_confirmation", help="Request confirmation of hours")
 @click.argument("student_id")
 @click.argument("activity_log_id")
 def request_confirmation_command(student_id, activity_log_id):
-    # Logic for requesting confirmation of hours
-    pass
+    student = Student.query.filter_by(studentID=student_id).first()
+    if student:
+        student.requestConfirmationOfHours(activity_log_id)
 
 @app.cli.command("view_leaderboard", help="View student leaderboard")
 def view_leaderboard_command():
-    # Logic for viewing the student leaderboard
-    pass
+    leaderboard = LeaderBoardEntry.query.order_by(LeaderBoardEntry.totalHours.desc()).all()
+    for entry in leaderboard:
+        print(f'Student ID: {entry.studentID}, Total Hours: {entry.totalHours}, Total Accolades: {entry.totalAccolades}, Rank: {entry.rank}')
 
 @app.cli.command("view_accolades", help="View student accolades")
 @click.argument("student_id")
 def view_accolades_command(student_id):
-    # Logic for viewing student accolades
-    pass
-
+    student = Student.query.filter_by(studentID=student_id).first()
+    if student:
+        student.viewAccolades()
+        accolades = student.viewAccolades()
+        for accolade in accolades:
+            print(f'Accolade ID: {accolade.accoladeID}, Date Awarded: {accolade.dateAwarded}')
+            print(f'Accolade Name: {accolade.name}, Milestone Hours: {accolade.milestoneHours}')
+    else:
+        print("Student not found.")
 
 # Commands can be organized using groups
 

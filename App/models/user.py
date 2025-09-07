@@ -1,8 +1,10 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
+from datetime import datetime
+import uuid
 
 class User(db.Model):
-    userID = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.String, primary_key=True)
     username =  db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(120), nullable=False)
 
@@ -31,10 +33,9 @@ class User(db.Model):
         return False
 
     def logout() -> None:
-        # Logic for logging out the user
         pass
 
-    def changePassword(oldPass: str, newPass: str) -> bool:
+    def changePassword(self, oldPass: str, newPass: str) -> bool:
         if self.check_password(oldPass):
             self.set_password(newPass)
             return True
@@ -45,19 +46,19 @@ class Student(User):
     totalHours = db.Column(db.Integer, nullable=False, default=0)
     points = db.Column(db.Integer, nullable=False, default=0)
 
-    def requestConfirmationOfHours(activityLogID: str) -> None:
+    def requestConfirmationOfHours(self, activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID, studentID=self.studentID).first()
         if activity_log:
             activity_log.status = "pending"
             db.session.commit()
 
-    def viewLeaderboard() -> list:
+    def viewLeaderboard(self) -> list:
         return LeaderBoardEntry.query.filter_by(studentID=self.studentID).all()
 
-    def viewAccolades() -> list:
+    def viewAccolades(self) -> list:
         return Accolade.query.filter_by(studentID=self.studentID).all()
 
-    def logHours(hours: int, description: str) -> ActivityLog:
+    def logHours(self, hours: int, description: str) -> 'ActivityLog':
         new_log = ActivityLog.createLog(self.studentID, hours, description)
         db.session.add(new_log)
         db.session.commit()
@@ -98,7 +99,7 @@ class Accolade(db.Model):
             db.session.commit()
 
 class Staff(User):
-    staffID = db.Column(db.String, primary_key=True)
+    staffID = db.Column(db.String, db.ForeignKey('user.userID'), primary_key=True)
 
     def confirmHours(activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID).first()
@@ -136,10 +137,10 @@ class ActivityLog(db.Model):
         db.session.commit()
         return new_log
 
-    def updateStatus(newStatus: str) -> None:
+    def updateStatus(self, newStatus: str) -> None:
         self.status = newStatus
 
-    def getHoursLogged() -> int:
+    def getHoursLogged(self) -> int:
         return self.hoursLogged
     
 class LeaderBoardEntry(db.Model):
@@ -156,10 +157,10 @@ class LeaderBoardEntry(db.Model):
         self.totalHours = totalHours
         self.totalAccolades = totalAccolades
 
-    def updateEntry(student: Student) -> None:
+    def updateEntry(self, student: Student) -> None:
         self.totalHours = student.totalHours
         self.totalAccolades = len(student.viewAccolades())
         db.session.commit()
 
-    def getRank() -> int:
+    def getRank(self) -> int:
         return self.rank

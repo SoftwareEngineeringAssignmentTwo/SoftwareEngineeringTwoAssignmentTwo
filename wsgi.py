@@ -17,11 +17,43 @@ migrate = get_migrate(app)
 @app.cli.command("init", help="Creates and initializes the database")
 def init():
     initialize()
+    bob = User(username='bob', password='bobpass')
+    sally = User(username='sally', password='sallypass')
+    Larry = User(username='larry', password='larrypass')
+    db.session.add_all([bob, sally, Larry])
+    db.session.commit()
     print('database intialized')
 
 '''
 User Commands
 '''
+
+@app.cli.command("log_hours", help="Log hours for a student")
+@click.argument("student_id")
+@click.argument("hours")
+@click.argument("activity")
+def log_hours_command(student_id, hours, activity):
+    # Logic for logging hours
+    pass
+
+@app.cli.command("request_confirmation", help="Request confirmation of hours")
+@click.argument("student_id")
+@click.argument("activity_log_id")
+def request_confirmation_command(student_id, activity_log_id):
+    # Logic for requesting confirmation of hours
+    pass
+
+@app.cli.command("view_leaderboard", help="View student leaderboard")
+def view_leaderboard_command():
+    # Logic for viewing the student leaderboard
+    pass
+
+@app.cli.command("view_accolades", help="View student accolades")
+@click.argument("student_id")
+def view_accolades_command(student_id):
+    # Logic for viewing student accolades
+    pass
+
 
 # Commands can be organized using groups
 

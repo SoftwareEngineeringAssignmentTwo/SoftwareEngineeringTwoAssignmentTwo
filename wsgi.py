@@ -4,6 +4,7 @@ import sys
 from flask.cli import AppGroup
 
 from App.database import get_migrate, db
+from sqlalchemy import desc
 from App.models import User
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize )
@@ -91,7 +92,7 @@ def request_confirmation_command(student_id, activity_log_id):
 
 @app.cli.command("view_leaderboard", help="View student leaderboard")
 def view_leaderboard_command():
-    leaderboard = LeaderBoardEntry.query.order_by(LeaderBoardEntry.totalHours.desc()).all()
+    leaderboard = LeaderBoardEntry.query.order_by(desc(LeaderBoardEntry.totalHours)).all()
     for entry in leaderboard:
         print(f'Student ID: {entry.studentID}, Total Hours: {entry.totalHours}, Total Accolades: {entry.totalAccolades}, Rank: {entry.rank}')
 
@@ -105,28 +106,7 @@ def view_accolades_command(student_id):
             print(f'Accolade ID: {accolade.accoladeID}, Date Awarded: {accolade.dateAwarded}')
     pass
 
-@app.cli.command("view_leaderboard", help="View student leaderboard")
-def view_leaderboard_command():
-    leaderboard = LeaderBoardEntry.query.order_by(LeaderBoardEntry.totalHours.desc()).all()
-    for entry in leaderboard:
-        print(f'Student ID: {entry.studentID}, Total Hours: {entry.totalHours}, Total Accolades: {entry.totalAccolades}, Rank: {entry.rank}')
 
-
-@app.cli.command("view_accolades", help="View student accolades")
-@click.argument("student_id")
-def view_accolades_command(student_id):
-    student = Student.query.filter_by(studentID=student_id).first()
-    if student:
-        accolades = student.viewAccolades()
-        for accolade in accolades:
-            print(f'Accolade ID: {accolade.accoladeID}, Date Awarded: {accolade.dateAwarded}')
-    pass
-
-@app.cli.command("view_leaderboard", help="View student leaderboard")
-def view_leaderboard_command():
-    leaderboard = LeaderBoardEntry.query.order_by(LeaderBoardEntry.totalHours.desc()).all()
-    for entry in leaderboard:
-        print(f'Student ID: {entry.studentID}, Total Hours: {entry.totalHours}, Total Accolades: {entry.totalAccolades}, Rank: {entry.rank}')
 # eg : flask user <command>
 user_cli = AppGroup('user', help='User object commands') 
 

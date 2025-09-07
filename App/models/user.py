@@ -67,7 +67,7 @@ class Student(User):
 
 class Accolade(db.Model):
     accoladeID = db.Column(db.String, primary_key=True)
-    studentID = db.Column(db.String, db.ForeignKey('student.studentID'), nullable=False)
+    studentID = db.Column(db.String, db.ForeignKey('student.studentID'), nullable=True)
     name = db.Column(db.String, nullable=False)
     milestoneHours = db.Column(db.Integer, nullable=False)
     dateAwarded = db.Column(db.Date, nullable=False)

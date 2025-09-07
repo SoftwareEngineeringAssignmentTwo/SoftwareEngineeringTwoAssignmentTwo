@@ -7,7 +7,7 @@ from App.database import get_migrate, db
 from App.models import User
 from App.main import create_app
 from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize )
-from App.models.user import Student, LeaderBoardEntry
+from App.models.user import Student, LeaderBoardEntry, Accolade, ActivityLog, Staff
 
 
 # This commands file allow you to create convenient CLI commands for testing controllers

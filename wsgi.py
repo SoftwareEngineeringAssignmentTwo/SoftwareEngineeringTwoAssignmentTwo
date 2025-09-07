@@ -41,7 +41,29 @@ def init():
         print('Created user: rob')
     else:
         print('User rob already exists')
-    
+
+    # Create a student
+    student = Student(username='student1', password='student1pass')
+
+    # Create a leaderboard entry for the student
+    leaderboard_entry = LeaderBoardEntry(entryID='1', studentID=student.studentID, rank=1, totalHours=100, totalAccolades=5)
+    db.session.add(student)
+    db.session.add(leaderboard_entry)
+
+    # Allocades
+    accolade1 = Accolade.createAccolade('Bronze', 100)
+    accolade2 = Accolade.createAccolade('Silver', 200)
+    accolade3 = Accolade.createAccolade('Gold', 300)
+    db.session.add_all([accolade1, accolade2, accolade3])
+
+    # ActivityLogs
+    log1 = ActivityLog.createLog(student.studentID, 10, 'Completed assignment')
+    log2 = ActivityLog.createLog(student.studentID, 20, 'Attended workshop')
+    db.session.add_all([log1, log2])
+
+    # Staff
+    staff = Staff(username='staff1', password='staff1pass')
+    db.session.add(staff)
     db.session.commit()
     print('database intialized')
 

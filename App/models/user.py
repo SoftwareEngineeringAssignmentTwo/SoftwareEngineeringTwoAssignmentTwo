@@ -102,13 +102,13 @@ class Accolade(db.Model):
 class Staff(User):
     staffID = db.Column(db.String, db.ForeignKey('user.userID'), primary_key=True)
 
-    def confirmHours(activityLogID: str) -> None:
+    def confirmHours(self, activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID).first()
         if activity_log:
             activity_log.status = "confirmed"
             db.session.commit()
 
-    def viewLeaderboard() -> list:
+    def viewLeaderboard(self) -> list:
         return LeaderBoardEntry.query.all()
 
 class ActivityLog(db.Model):

@@ -1,7 +1,5 @@
-from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
-import uuid
 
 class User(db.Model):
     userID = db.Column(db.Integer, primary_key=True)
@@ -97,7 +95,6 @@ class Accolade(db.Model):
         accolade = Accolade.query.filter_by(accoladeID=accoladeID).first()
         if accolade:
             accolade.studentID = studentID
-            accolade.dateAwarded = datetime.utcnow()
             db.session.commit()
 
 class Staff(User):
@@ -105,15 +102,12 @@ class Staff(User):
 
     def confirmHours(activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID).first()
-        if activity_log and activity_log.status == "pending":
+        if activity_log:
             activity_log.status = "confirmed"
-            student = Student.query.filter_by(studentID=activity_log.studentID).first()
-            if student:
-                student.totalHours += activity_log.hoursLogged
-                db.session.commit()
+            db.session.commit()
 
     def viewLeaderboard() -> list:
-        return LeaderBoardEntry.query.filter_by(staffID=self.staffID).all()
+        return LeaderBoardEntry.query.all()
 
 class ActivityLog(db.Model):
     logID = db.Column(db.String, primary_key=True)

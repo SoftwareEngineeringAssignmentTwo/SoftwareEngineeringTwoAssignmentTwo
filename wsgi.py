@@ -18,11 +18,6 @@ migrate = get_migrate(app)
 @app.cli.command("init", help="Creates and initializes the database")
 def init():
     initialize()
-    bob = User(username='bob', password='bobpass')
-    sally = User(username='sally', password='sallypass')
-    larry = User(username='larry', password='larrypass')
-    db.session.add_all([bob, sally, larry])
-    db.session.commit()
     print('database intialized')
 
 '''
@@ -36,7 +31,8 @@ User Commands
 def log_hours_command(student_id, hours, activity):
     student = Student.query.filter_by(studentID=student_id).first()
     if student:
-        student.logHours(int(hours), activity)
+        log = student.logHours(int(hours), activity)
+        print(f'Logged {hours} hours for {student_id} with log ID {log.logID}')
 
 @app.cli.command("request_confirmation", help="Request confirmation of hours")
 @click.argument("student_id")
@@ -57,13 +53,11 @@ def view_leaderboard_command():
 def view_accolades_command(student_id):
     student = Student.query.filter_by(studentID=student_id).first()
     if student:
-        student.viewAccolades()
         accolades = student.viewAccolades()
         for accolade in accolades:
             print(f'Accolade ID: {accolade.accoladeID}, Date Awarded: {accolade.dateAwarded}')
-            print(f'Accolade Name: {accolade.name}, Milestone Hours: {accolade.milestoneHours}')
-    else:
-        print("Student not found.")
+    pass
+
 
 # Commands can be organized using groups
 

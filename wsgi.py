@@ -72,41 +72,124 @@ def init():
 User Commands
 '''
 
-@app.cli.command("log_hours", help="Log hours for a student")
-@click.argument("student_id")
-@click.argument("hours")
-@click.argument("activity")
-def log_hours_command(student_id, hours, activity):
-    student = Student.query.filter_by(studentID=student_id).first()
-    if student:
-        log = student.logHours(int(hours), activity)
-        print(f'Logged {hours} hours for {student_id} with log ID {log.logID}')
+@app.cli.command("staff-log-hours", help="Staff log hours for a student")
+@click.argument('staff_username', default='staff1')
+@click.argument('student_username', default='student1')
+@click.argument('hours', default='10')
+@click.argument('activity', default='community service')
+def staff_log_hours_command(staff_username, student_username, hours, activity):
+    staff = Staff.query.filter_by(username=staff_username).first()
+    student = Student.query.filter_by(username=student_username).first()
+    if not staff:
+        print(f'Staff {staff_username} not found!')
+        return
+    if not student:
+        print(f'Student {student_username} not found!')
+        return
+    log = staff.logHoursForStudent(student.studentID, int(hours), activity)
+    print(f'Staff {staff_username} logged {hours} hours for student {student_username}')
+    print(f'Activity: {activity}')
+    print(f'Log ID: {log.logID}')
 
-@app.cli.command("request_confirmation", help="Request confirmation of hours")
-@click.argument("student_id")
-@click.argument("activity_log_id")
-def request_confirmation_command(student_id, activity_log_id):
-    student = Student.query.filter_by(studentID=student_id).first()
-    if student:
-        student.requestConfirmationOfHours(activity_log_id)
-        print(f'Requested confirmation for activity log ID {activity_log_id}')
-        pass
+@app.cli.command("request-confirmation", help="Student request confirmation of hours")
+@click.argument('student_username', default='student1')
+@click.argument('activity_log_id')
+def request_confirmation_command(student_username, activity_log_id):
+    student = Student.query.filter_by(username=student_username).first()
+    if not student:
+        print(f'Student {student_username} not found!')
+        return
+    activity_log = ActivityLog.query.filter_by(logID=activity_log_id, studentID=student.studentID).first()
+    if not activity_log:
+        print(f'Activity log {activity_log_id} not found for student {student_username}!')
+        return
+    student.requestConfirmationOfHours(activity_log_id)
+    print(f'Student {student_username} requested confirmation for activity log {activity_log_id}')
+    print(f'Status changed to: pending')
 
-@app.cli.command("view_leaderboard", help="View student leaderboard")
+@app.cli.command("view-leaderboard", help="View student leaderboard ranked by confirmed hours")
 def view_leaderboard_command():
-    leaderboard = LeaderBoardEntry.query.order_by(desc(LeaderBoardEntry.totalHours)).all()
-    for entry in leaderboard:
-        print(f'Student ID: {entry.studentID}, Total Hours: {entry.totalHours}, Total Accolades: {entry.totalAccolades}, Rank: {entry.rank}')
+    # Get all students with confirmed hours
+    students = Student.query.all()
+    leaderboard_data = []
+    
+    for student in students:
+        confirmed_logs = ActivityLog.query.filter_by(studentID=student.studentID, status='confirmed').all()
+        total_confirmed_hours = sum(log.hoursLogged for log in confirmed_logs)
+        accolades_count = len(student.viewAccolades())
+        leaderboard_data.append({
+            'username': student.username,
+            'studentID': student.studentID,
+            'total_hours': total_confirmed_hours,
+            'accolades': accolades_count
+        })
+    
+    # Sort by total hours descending
+    leaderboard_data.sort(key=lambda x: x['total_hours'], reverse=True)
+    
+    print("Student Leaderboard (Ranked by Confirmed Community Service Hours):")
+    print("=" * 70)
+    for rank, entry in enumerate(leaderboard_data, 1):
+        print(f"{rank}. {entry['username']} - {entry['total_hours']} hours - {entry['accolades']} accolades")
+    
+    if not leaderboard_data:
+        print("No students found with confirmed hours.")
 
-@app.cli.command("view_accolades", help="View student accolades")
-@click.argument("student_id")
-def view_accolades_command(student_id):
-    student = Student.query.filter_by(studentID=student_id).first()
-    if student:
-        accolades = student.viewAccolades()
-        for accolade in accolades:
-            print(f'Accolade ID: {accolade.accoladeID}, Date Awarded: {accolade.dateAwarded}')
-    pass
+@app.cli.command("view-accolades", help="Student view their earned accolades")
+@click.argument('student_username', default='student1')
+def view_accolades_command(student_username):
+    student = Student.query.filter_by(username=student_username).first()
+    if not student:
+        print(f'Student {student_username} not found!')
+        return
+    
+    # Get confirmed hours for milestone calculation
+    confirmed_logs = ActivityLog.query.filter_by(studentID=student.studentID, status='confirmed').all()
+    total_confirmed_hours = sum(log.hoursLogged for log in confirmed_logs)
+    
+    print(f"Accolades for {student_username}:")
+    print(f"Total confirmed community service hours: {total_confirmed_hours}")
+    print("=" * 50)
+    
+    # Check for milestones and award accolades
+    milestones = [10, 25, 50, 100, 200, 300]
+    earned_accolades = []
+    
+    for milestone in milestones:
+        if total_confirmed_hours >= milestone:
+            milestone_name = f"{milestone} Hour Milestone"
+            earned_accolades.append(milestone_name)
+    
+    if earned_accolades:
+        for i, accolade in enumerate(earned_accolades, 1):
+            print(f"{i}. {accolade}")
+    else:
+        print("No accolades earned yet. Keep volunteering!")
+        print("Next milestone: 10 hours")
+
+
+@app.cli.command("staff-confirm-hours", help="Staff confirm student hours")
+@click.argument('staff_username', default='staff1')
+@click.argument('activity_log_id')
+def staff_confirm_hours_command(staff_username, activity_log_id):
+    staff = Staff.query.filter_by(username=staff_username).first()
+    if not staff:
+        print(f'Staff {staff_username} not found!')
+        return
+    
+    activity_log = ActivityLog.query.filter_by(logID=activity_log_id).first()
+    if not activity_log:
+        print(f'Activity log {activity_log_id} not found!')
+        return
+    
+    if activity_log.status == 'confirmed':
+        print(f'Activity log {activity_log_id} is already confirmed!')
+        return
+    
+    staff.confirmHours(activity_log_id)
+    print(f'Staff {staff_username} confirmed activity log {activity_log_id}')
+    print(f'Hours confirmed: {activity_log.hoursLogged}')
+    print(f'Activity: {activity_log.description}')
 
 
 # eg : flask user <command>

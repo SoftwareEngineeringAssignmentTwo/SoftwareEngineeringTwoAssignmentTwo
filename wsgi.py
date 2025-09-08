@@ -43,28 +43,37 @@ def init():
     else:
         print('User rob already exists')
 
-    # Create a student
-    student = Student(username='student1', password='student1pass')
+    # Create students
+    if not Student.query.filter_by(username='student1').first():
+        student1 = Student(username='student1', password='student1pass')
+        db.session.add(student1)
+        print('Created student: student1')
+    else:
+        print('Student student1 already exists')
+        student1 = Student.query.filter_by(username='student1').first()
+        
+    if not Student.query.filter_by(username='student2').first():
+        student2 = Student(username='student2', password='student2pass')
+        db.session.add(student2)
+        print('Created student: student2')
+    else:
+        print('Student student2 already exists')
+        student2 = Student.query.filter_by(username='student2').first()
 
-    # Create a leaderboard entry for the student
-    leaderboard_entry = LeaderBoardEntry(entryID='1', studentID=student.studentID, rank=1, totalHours=100, totalAccolades=5)
-    db.session.add(student)
-    db.session.add(leaderboard_entry)
-
-    # Allocades
-    accolade1 = Accolade.createAccolade('Bronze', 100)
-    accolade2 = Accolade.createAccolade('Silver', 200)
-    accolade3 = Accolade.createAccolade('Gold', 300)
-    db.session.add_all([accolade1, accolade2, accolade3])
-
-    # ActivityLogs
-    log1 = ActivityLog.createLog(student.studentID, 10, 'Completed assignment')
-    log2 = ActivityLog.createLog(student.studentID, 20, 'Attended workshop')
-    db.session.add_all([log1, log2])
-
-    # Staff
-    staff = Staff(username='staff1', password='staff1pass')
-    db.session.add(staff)
+    # Create staff
+    if not Staff.query.filter_by(username='staff1').first():
+        staff1 = Staff(username='staff1', password='staff1pass')
+        db.session.add(staff1)
+        print('Created staff: staff1')
+    else:
+        print('Staff staff1 already exists')
+        
+    if not Staff.query.filter_by(username='staff2').first():
+        staff2 = Staff(username='staff2', password='staff2pass')
+        db.session.add(staff2)
+        print('Created staff: staff2')
+    else:
+        print('Staff staff2 already exists')
     db.session.commit()
     print('database intialized')
 

@@ -89,6 +89,8 @@ def request_confirmation_command(student_id, activity_log_id):
     student = Student.query.filter_by(studentID=student_id).first()
     if student:
         student.requestConfirmationOfHours(activity_log_id)
+        print(f'Requested confirmation for activity log ID {activity_log_id}')
+        pass
 
 @app.cli.command("view_leaderboard", help="View student leaderboard")
 def view_leaderboard_command():

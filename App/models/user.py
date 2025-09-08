@@ -15,7 +15,7 @@ class User(db.Model):
 
     def get_json(self):
         return{
-            'id': self.id,
+            'id': self.userID,
             'username': self.username
         }
 
@@ -27,6 +27,7 @@ class User(db.Model):
         """Check hashed password."""
         return check_password_hash(self.password, password)
 
+    @staticmethod
     def login(username: str, password: str) -> bool:
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
@@ -102,6 +103,11 @@ class Accolade(db.Model):
 class Staff(User):
     staffID = db.Column(db.String, db.ForeignKey('user.userID'), primary_key=True)
 
+    def logHoursForStudent(self, studentID: str, hours: int, activity: str) -> 'ActivityLog':
+        """Staff can log hours for a student"""
+        new_log = ActivityLog.createLog(studentID, hours, activity)
+        return new_log
+
     def confirmHours(self, activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID).first()
         if activity_log:
@@ -113,17 +119,19 @@ class Staff(User):
 
 class ActivityLog(db.Model):
     logID = db.Column(db.String, primary_key=True)
-    studentID = db.Column(db.String, db.ForeignKey('student.studentID'), primary_key=True)
+    studentID = db.Column(db.String, db.ForeignKey('student.studentID'), nullable=False)
     hoursLogged = db.Column(db.Integer, nullable=False)
     dateLogged = db.Column(db.Date, nullable=False)
     status = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
 
-    def __init__(self, logID, studentID, hoursLogged, dateLogged, status):
+    def __init__(self, logID, studentID, hoursLogged, dateLogged, status, description):
         self.logID = logID
         self.studentID = studentID
         self.hoursLogged = hoursLogged
         self.dateLogged = dateLogged
         self.status = status
+        self.description = description
     
     @staticmethod
     def createLog(studentID: str, hours: int, description: str) -> 'ActivityLog':
@@ -132,7 +140,8 @@ class ActivityLog(db.Model):
             studentID=studentID,
             hoursLogged=hours,
             dateLogged=datetime.utcnow(),
-            status="pending"
+            status="pending",
+            description=description
         )
         db.session.add(new_log)
         db.session.commit()

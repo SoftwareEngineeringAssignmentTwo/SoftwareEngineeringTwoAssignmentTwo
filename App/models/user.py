@@ -34,7 +34,7 @@ class User(db.Model):
             return True
         return False
 
-    def logout() -> None:
+    def logout(self) -> None:
         pass
 
     def changePassword(self, oldPass: str, newPass: str) -> bool:

@@ -114,7 +114,7 @@ def request_confirmation_command(student_username, activity_log_id):
         return
     student.requestConfirmationOfHours(activity_log_id)
     print(f'Student {student_username} requested confirmation for activity log {activity_log_id}')
-    print(f'Status changed to: pending')
+    print('Status changed to: pending')
 
 @app.cli.command("view-leaderboard", help="View student leaderboard ranked by confirmed hours")
 def view_leaderboard_command():

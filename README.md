@@ -194,6 +194,29 @@ flask view-leaderboard
 flask view-accolades student1
 ```
 
+## ⚠️ Important Note About Log IDs
+
+**When using the system, you MUST use the actual Log ID that gets generated!**
+
+Each time you run `flask staff-log-hours`, the system generates a unique Log ID. You must copy this exact ID (not the example one shown above) and use it in the subsequent `request-confirmation` and `staff-confirm-hours` commands.
+
+**Example of what to do:**
+
+1. Run the staff-log-hours command:
+   ```bash
+   flask staff-log-hours staff1 student1 15 "volunteered at local food bank"
+   ```
+   
+2. Copy the actual Log ID from the output (e.g., `c396d501-6933-4d53-9ccd-f627d7aca836`)
+
+3. Use that real Log ID in the next commands:
+   ```bash
+   flask request-confirmation student1 c396d501-6933-4d53-9ccd-f627d7aca836
+   flask staff-confirm-hours staff1 c396d501-6933-4d53-9ccd-f627d7aca836
+   ```
+
+If you use the wrong Log ID, you'll get errors like "Activity log not found!"
+
 ## System Architecture
 
 ### Models

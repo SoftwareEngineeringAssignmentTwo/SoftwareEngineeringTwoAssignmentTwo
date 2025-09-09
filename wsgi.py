@@ -1,6 +1,7 @@
 import click
 import pytest
 import sys
+import uuid
 from flask.cli import AppGroup
 
 from App.database import get_migrate, db
@@ -156,6 +157,10 @@ def view_accolades_command(student_username):
     confirmed_logs = ActivityLog.query.filter_by(studentID=student.studentID, status='confirmed').all()
     total_confirmed_hours = sum(log.hoursLogged for log in confirmed_logs)
     
+    # Update student's totalHours
+    student.totalHours = total_confirmed_hours
+    db.session.commit()
+    
     print(f"Accolades for {student_username}:")
     print(f"Total confirmed community service hours: {total_confirmed_hours}")
     print("=" * 50)
@@ -208,9 +213,54 @@ def staff_confirm_hours_command(staff_username, activity_log_id):
         return
     
     staff.confirmHours(activity_log_id)
+    
+    # Update student's total hours
+    student = Student.query.filter_by(studentID=activity_log.studentID).first()
+    if student:
+        confirmed_logs = ActivityLog.query.filter_by(studentID=student.studentID, status='confirmed').all()
+        student.totalHours = sum(log.hoursLogged for log in confirmed_logs)
+        db.session.commit()
+    
     print(f'Staff {staff_username} confirmed activity log {activity_log_id}')
     print(f'Hours confirmed: {activity_log.hoursLogged}')
     print(f'Activity: {activity_log.description}')
+
+@app.cli.command("update-leaderboard", help="Update leaderboard entries for all students")
+def update_leaderboard_command():
+    students = Student.query.all()
+    
+    for student in students:
+        # Calculate confirmed hours and accolades
+        confirmed_logs = ActivityLog.query.filter_by(studentID=student.studentID, status='confirmed').all()
+        total_confirmed_hours = sum(log.hoursLogged for log in confirmed_logs)
+        total_accolades = len(student.viewAccolades())
+        
+        # Update student's totalHours
+        student.totalHours = total_confirmed_hours
+        
+        # Check if leaderboard entry exists
+        existing_entry = LeaderBoardEntry.query.filter_by(studentID=student.studentID).first()
+        
+        if existing_entry:
+            existing_entry.updateEntry(student)
+        else:
+            # Create new leaderboard entry
+            new_entry = LeaderBoardEntry(
+                entryID=str(uuid.uuid4()),
+                studentID=student.studentID,
+                rank=0,  # Will be calculated later
+                totalHours=total_confirmed_hours,
+                totalAccolades=total_accolades
+            )
+            db.session.add(new_entry)
+    
+    # Calculate ranks
+    entries = LeaderBoardEntry.query.order_by(desc(LeaderBoardEntry.totalHours)).all()
+    for rank, entry in enumerate(entries, 1):
+        entry.rank = rank
+    
+    db.session.commit()
+    print("Leaderboard updated successfully!")
 
 
 # eg : flask user <command>

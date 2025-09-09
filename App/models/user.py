@@ -48,6 +48,10 @@ class Student(User):
     totalHours = db.Column(db.Integer, nullable=False, default=0)
     points = db.Column(db.Integer, nullable=False, default=0)
 
+    def __init__(self, username, password):
+        super().__init__(username, password)
+        self.studentID = self.userID
+
     def requestConfirmationOfHours(self, activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID, studentID=self.studentID).first()
         if activity_log:
@@ -71,7 +75,7 @@ class Accolade(db.Model):
     studentID = db.Column(db.String, db.ForeignKey('student.studentID'), nullable=True)
     name = db.Column(db.String, nullable=False)
     milestoneHours = db.Column(db.Integer, nullable=False)
-    dateAwarded = db.Column(db.Date, nullable=False)
+    dateAwarded = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, accoladeID, studentID, name, milestoneHours, dateAwarded):
         self.accoladeID = accoladeID
@@ -103,6 +107,10 @@ class Accolade(db.Model):
 class Staff(User):
     staffID = db.Column(db.String, db.ForeignKey('user.userID'), primary_key=True)
 
+    def __init__(self, username, password):
+        super().__init__(username, password)
+        self.staffID = self.userID
+
     def logHoursForStudent(self, studentID: str, hours: int, activity: str) -> 'ActivityLog':
         """Staff can log hours for a student"""
         new_log = ActivityLog.createLog(studentID, hours, activity)
@@ -121,7 +129,7 @@ class ActivityLog(db.Model):
     logID = db.Column(db.String, primary_key=True)
     studentID = db.Column(db.String, db.ForeignKey('student.studentID'), nullable=False)
     hoursLogged = db.Column(db.Integer, nullable=False)
-    dateLogged = db.Column(db.Date, nullable=False)
+    dateLogged = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
 

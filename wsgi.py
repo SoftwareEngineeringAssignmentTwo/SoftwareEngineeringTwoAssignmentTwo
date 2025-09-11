@@ -100,6 +100,7 @@ def staff_log_hours_command(staff_username, student_username, hours, activity):
         print(f'Student {student_username} not found!')
         return
     log = staff.logHoursForStudent(student.studentID, int(hours), activity)
+    db.session.commit()
     print(
         f'Staff {staff_username} logged {hours} hours for student {student_username}'
     )

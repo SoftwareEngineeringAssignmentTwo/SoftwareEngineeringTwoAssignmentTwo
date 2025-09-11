@@ -9,7 +9,7 @@ from sqlalchemy import desc
 from App.main import create_app
 from App.controllers import (create_user, get_all_users_json, get_all_users,
                              initialize)
-from App.models import User, Student, LeaderBoardEntry, Accolade, ActivityLog, Staff
+from App.models import User, Student, LeaderBoardEntry, ActivityLog, Staff
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 

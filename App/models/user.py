@@ -4,9 +4,16 @@ from datetime import datetime
 import uuid   # This is used to generate unique IDs for the users
 
 class User(db.Model):
+    __tablename__ = 'user'
     userID = db.Column(db.String, primary_key=True)
     username =  db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(120), nullable=False)
+    user_type = db.Column(db.String(20))
+    
+    __mapper_args__ = {
+        'polymorphic_identity': 'user',
+        'polymorphic_on': user_type
+    }
 
     def __init__(self, username, password):
         self.userID = str(uuid.uuid4())
@@ -44,9 +51,14 @@ class User(db.Model):
         return False
     
 class Student(User):
+    __tablename__ = 'student'
     studentID = db.Column(db.String, db.ForeignKey('user.userID'), primary_key=True)
     totalHours = db.Column(db.Integer, nullable=False, default=0)
     points = db.Column(db.Integer, nullable=False, default=0)
+    
+    __mapper_args__ = {
+        'polymorphic_identity': 'student'
+    }
 
     def __init__(self, username, password):
         super().__init__(username, password)
@@ -54,7 +66,7 @@ class Student(User):
 
     def requestConfirmationOfHours(self, activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID, studentID=self.studentID).first()
-        if activity_log:
+        if activity_log and activity_log.status == "logged":
             activity_log.status = "pending"
             db.session.commit()
 
@@ -66,8 +78,6 @@ class Student(User):
 
     def logHours(self, hours: int, description: str) -> 'ActivityLog':
         new_log = ActivityLog.createLog(self.studentID, hours, description)
-        db.session.add(new_log)
-        db.session.commit()
         return new_log
 
 class Accolade(db.Model):
@@ -105,7 +115,12 @@ class Accolade(db.Model):
             db.session.commit()
 
 class Staff(User):
+    __tablename__ = 'staff'
     staffID = db.Column(db.String, db.ForeignKey('user.userID'), primary_key=True)
+    
+    __mapper_args__ = {
+        'polymorphic_identity': 'staff'
+    }
 
     def __init__(self, username, password):
         super().__init__(username, password)
@@ -118,8 +133,31 @@ class Staff(User):
 
     def confirmHours(self, activityLogID: str) -> None:
         activity_log = ActivityLog.query.filter_by(logID=activityLogID).first()
-        if activity_log:
+        if activity_log and activity_log.status == "pending":
             activity_log.status = "confirmed"
+            # Update student's total hours when confirmed
+            student = Student.query.filter_by(studentID=activity_log.studentID).first()
+            if student:
+                student.totalHours += activity_log.hoursLogged
+                # Check for accolades based on milestones
+                milestones = [10, 25, 50, 100]
+                for milestone in milestones:
+                    if student.totalHours >= milestone:
+                        # Check if accolade already exists for this student and milestone
+                        existing_accolade = Accolade.query.filter_by(
+                            studentID=student.studentID, 
+                            milestoneHours=milestone
+                        ).first()
+                        if not existing_accolade:
+                            # Create and award the accolade
+                            accolade = Accolade(
+                                accoladeID=str(uuid.uuid4()),
+                                studentID=student.studentID,
+                                name=f"{milestone} Hours Volunteer",
+                                milestoneHours=milestone,
+                                dateAwarded=datetime.utcnow()
+                            )
+                            db.session.add(accolade)
             db.session.commit()
 
     def viewLeaderboard(self) -> list:
@@ -148,7 +186,7 @@ class ActivityLog(db.Model):
             studentID=studentID,
             hoursLogged=hours,
             dateLogged=datetime.utcnow(),
-            status="pending",
+            status="logged",
             description=description
         )
         db.session.add(new_log)

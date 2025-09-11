@@ -2,15 +2,14 @@ import click
 import pytest
 import sys
 import uuid
-from flask.cli import AppGroup
+from flask.cli import AppGroup, with_appcontext
 
 from App.database import get_migrate, db
 from sqlalchemy import desc
-from App.models import User
 from App.main import create_app
 from App.controllers import (create_user, get_all_users_json, get_all_users,
                              initialize)
-from App.models.user import Student, LeaderBoardEntry, Accolade, ActivityLog, Staff
+from App.models import User, Student, LeaderBoardEntry, Accolade, ActivityLog, Staff
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 
@@ -20,6 +19,7 @@ migrate = get_migrate(app)
 
 # This command creates and initializes the database
 @app.cli.command("init", help="Creates and initializes the database")
+@with_appcontext
 def init():
     initialize()
 
@@ -76,6 +76,7 @@ def init():
         print('Created staff: staff2')
     else:
         print('Staff staff2 already exists')
+    
     db.session.commit()
     print('database intialized')
 
@@ -90,6 +91,7 @@ User Commands
 @click.argument('student_username', default='student1')
 @click.argument('hours', default='10')
 @click.argument('activity', default='community service')
+@with_appcontext
 def staff_log_hours_command(staff_username, student_username, hours, activity):
     staff = Staff.query.filter_by(username=staff_username).first()
     student = Student.query.filter_by(username=student_username).first()
@@ -100,7 +102,6 @@ def staff_log_hours_command(staff_username, student_username, hours, activity):
         print(f'Student {student_username} not found!')
         return
     log = staff.logHoursForStudent(student.studentID, int(hours), activity)
-    db.session.commit()
     print(
         f'Staff {staff_username} logged {hours} hours for student {student_username}'
     )
@@ -108,10 +109,27 @@ def staff_log_hours_command(staff_username, student_username, hours, activity):
     print(f'Log ID: {log.logID}')
 
 
+@app.cli.command("student-log-hours", help="Student log their own hours")
+@click.argument('student_username', default='student1')
+@click.argument('hours', default='5')
+@click.argument('activity', default='volunteer work')
+@with_appcontext
+def student_log_hours_command(student_username, hours, activity):
+    student = Student.query.filter_by(username=student_username).first()
+    if not student:
+        print(f'Student {student_username} not found!')
+        return
+    log = student.logHours(int(hours), activity)
+    print(f'Student {student_username} logged {hours} hours of {activity}')
+    print(f'Log ID: {log.logID}')
+    print(f'Status: {log.status}')
+
+
 @app.cli.command("request-confirmation",
                  help="Student request confirmation of hours")
 @click.argument('student_username', default='student1')
 @click.argument('activity_log_id')
+@with_appcontext
 def request_confirmation_command(student_username, activity_log_id):
     student = Student.query.filter_by(username=student_username).first()
     if not student:
@@ -133,6 +151,7 @@ def request_confirmation_command(student_username, activity_log_id):
 
 @app.cli.command("view-leaderboard",
                  help="View student leaderboard ranked by confirmed hours")
+@with_appcontext
 def view_leaderboard_command():
     # Get all students with confirmed hours
     students = Student.query.all()
@@ -166,6 +185,7 @@ def view_leaderboard_command():
 
 @app.cli.command("view-accolades", help="Student view their earned accolades")
 @click.argument('student_username', default='student1')
+@with_appcontext
 def view_accolades_command(student_username):
     student = Student.query.filter_by(username=student_username).first()
     if not student:
@@ -185,23 +205,8 @@ def view_accolades_command(student_username):
     print(f"Total confirmed community service hours: {total_confirmed_hours}")
     print("=" * 50)
 
-    # Check for milestones and create/award accolades if not already awarded
-    milestones = [10, 25, 50, 100, 200, 300]
-
-    for milestone in milestones:
-        if total_confirmed_hours >= milestone:
-            milestone_name = f"{milestone} Hour Milestone"
-
-            # Check if student already has this accolade
-            existing_accolade = Accolade.query.filter_by(
-                studentID=student.studentID, name=milestone_name).first()
-
-            if not existing_accolade:
-                # Create the accolade and award it to the student
-                new_accolade = Accolade.createAccolade(milestone_name,
-                                                       milestone)
-                Accolade.awardAccolade(student.studentID,
-                                       new_accolade.accoladeID)
+    # Accolades are automatically awarded when staff confirms hours
+    # This view is read-only
 
     # Now display the actual accolade records from the database
     student_accolades = student.viewAccolades()
@@ -217,6 +222,7 @@ def view_accolades_command(student_username):
 @app.cli.command("staff-confirm-hours", help="Staff confirm student hours")
 @click.argument('staff_username', default='staff1')
 @click.argument('activity_log_id')
+@with_appcontext
 def staff_confirm_hours_command(staff_username, activity_log_id):
     staff = Staff.query.filter_by(username=staff_username).first()
     if not staff:
@@ -249,6 +255,7 @@ def staff_confirm_hours_command(staff_username, activity_log_id):
 
 @app.cli.command("update-leaderboard",
                  help="Update leaderboard entries for all students")
+@with_appcontext
 def update_leaderboard_command():
     students = Student.query.all()
 
@@ -333,3 +340,11 @@ def user_tests_command(type):
 
 
 app.cli.add_command(test)
+
+
+# Allow running CLI commands with python wsgi.py <command>
+if __name__ == "__main__":
+    import os
+    os.environ.setdefault("FLASK_APP", "wsgi.py")
+    from flask.cli import main as flask_main
+    flask_main()

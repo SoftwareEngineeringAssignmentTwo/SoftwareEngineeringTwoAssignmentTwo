@@ -76,10 +76,6 @@ class Student(User):
     def viewAccolades(self) -> list:
         return Accolade.query.filter_by(studentID=self.studentID).all()
 
-    def logHours(self, hours: int, description: str) -> 'ActivityLog':
-        new_log = ActivityLog.createLog(self.studentID, hours, description)
-        return new_log
-
 class Accolade(db.Model):
     accoladeID = db.Column(db.String, primary_key=True)
     studentID = db.Column(db.String, db.ForeignKey('student.studentID'), nullable=True)

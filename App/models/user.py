@@ -194,6 +194,9 @@ class ActivityLog(db.Model):
 
     def getHoursLogged(self) -> int:
         return self.hoursLogged
+
+    def description(self) -> str:
+        return self.description
     
 class LeaderBoardEntry(db.Model):
     entryID = db.Column(db.String, primary_key=True)

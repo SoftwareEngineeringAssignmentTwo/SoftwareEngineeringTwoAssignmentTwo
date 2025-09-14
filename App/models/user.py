@@ -195,7 +195,7 @@ class ActivityLog(db.Model):
     def getHoursLogged(self) -> int:
         return self.hoursLogged
 
-    def description(self) -> str:
+    def getDescription(self) -> str:
         return self.description
     
 class LeaderBoardEntry(db.Model):

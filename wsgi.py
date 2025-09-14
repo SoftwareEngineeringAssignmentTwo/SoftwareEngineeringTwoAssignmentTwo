@@ -243,8 +243,25 @@ def staff_confirm_hours_command(staff_username, activity_log_id):
 
     print(f'Staff {staff_username} confirmed activity log {activity_log_id}')
     print(f'Hours confirmed: {activity_log.hoursLogged}')
-    print(f'Activity: {activity_log.description}')
+    print(f'Activity: {activity_log.getDescription()}')
 
+
+@app.cli.command("view-activity-log", help="View details of a specific activity log")
+@click.argument('activity_log_id')
+def view_activity_log_command(activity_log_id):
+    activity_log = ActivityLog.query.filter_by(logID=activity_log_id).first()
+    if not activity_log:
+        print(f'Activity log {activity_log_id} not found!')
+        return
+    
+    student = Student.query.filter_by(studentID=activity_log.studentID).first()
+    print(f"Activity Log Details:")
+    print(f"ID: {activity_log.logID}")
+    print(f"Student: {student.username if student else 'Unknown'}")
+    print(f"Hours: {activity_log.getHoursLogged()}")
+    print(f"Description: {activity_log.getDescription()}")
+    print(f"Status: {activity_log.status}")
+    print(f"Date: {activity_log.dateLogged}")
 
 @app.cli.command("update-leaderboard",
                  help="Update leaderboard entries for all students")

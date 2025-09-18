@@ -172,8 +172,7 @@ def view_accolades_command(student_username):
         return
 
     # Get confirmed hours for milestone calculation
-    confirmed_logs = ActivityLog.query.filter_by(studentID=student.studentID,
-                                                 status='confirmed').all()
+    confirmed_logs = ActivityLog.query.filter_by(studentID=student.studentID,status='confirmed').all()
     total_confirmed_hours = sum(log.hoursLogged for log in confirmed_logs)
 
     # Update student's totalHours
@@ -255,7 +254,7 @@ def view_activity_log_command(activity_log_id):
         return
     
     student = Student.query.filter_by(studentID=activity_log.studentID).first()
-    print(f"Activity Log Details:")
+    print("Activity Log Details:")
     print(f"ID: {activity_log.logID}")
     print(f"Student: {student.username if student else 'Unknown'}")
     print(f"Hours: {activity_log.getHoursLogged()}")

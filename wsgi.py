@@ -183,23 +183,7 @@ def view_accolades_command(student_username):
     print(f"Total confirmed community service hours: {total_confirmed_hours}")
     print("=" * 50)
 
-    # Check for milestones and create/award accolades if not already awarded
-    milestones = [10, 25, 50, 100, 200, 300]
-
-    for milestone in milestones:
-        if total_confirmed_hours >= milestone:
-            milestone_name = f"{milestone} Hour Milestone"
-
-            # Check if student already has this accolade
-            existing_accolade = Accolade.query.filter_by(
-                studentID=student.studentID, name=milestone_name).first()
-
-            if not existing_accolade:
-                # Create the accolade and award it to the student
-                new_accolade = Accolade.createAccolade(milestone_name,
-                                                       milestone)
-                Accolade.awardAccolade(student.studentID,
-                                       new_accolade.accoladeID)
+    # Accolades are automatically created when hours are confirmed by staff
 
     # Now display the actual accolade records from the database
     student_accolades = student.viewAccolades()

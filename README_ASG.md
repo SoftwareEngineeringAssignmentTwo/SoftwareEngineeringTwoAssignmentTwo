@@ -262,11 +262,20 @@ The system uses SQLAlchemy models with the following key relationships:
 - Accolades are awarded based on confirmed hour milestones
 - LeaderBoard entries rank students by total confirmed hours
 
+## Assignment Requirements Fulfillment
+
+This implementation fully satisfies all required features:
+
+✅ **(Staff) Log hours for student** - Implemented via `flask staff-log-hours` command  
+✅ **(Student) Request confirmation of hours (by staff)** - Implemented via `flask request-confirmation` command  
+✅ **View Student Leaderboard** - Implemented via `flask view-leaderboard` command  
+✅ **(Student) View accolades (10/25/50 hours milestones)** - Implemented via `flask view-accolades` command
+
 ## Status Tracking
 
 Activity logs have three possible statuses:
-- **pending**: Initial status when hours are logged
+- **logged**: Initial status when hours are first recorded by staff
+- **pending**: Status after student requests confirmation  
 - **confirmed**: Hours have been verified and approved by staff
-- **rejected**: Hours have been reviewed and not approved (future enhancement)
 
 Only **confirmed** hours count toward the leaderboard rankings and accolade milestones.

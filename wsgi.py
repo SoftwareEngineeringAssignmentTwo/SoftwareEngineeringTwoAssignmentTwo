@@ -246,6 +246,31 @@ def view_activity_log_command(activity_log_id):
     print(f"Status: {activity_log.status}")
     print(f"Date: {activity_log.dateLogged}")
 
+@app.cli.command("staff-reject-hours", help="Staff reject student hours")
+@click.argument('staff_username', default='staff1')
+@click.argument('activity_log_id')
+def staff_reject_hours_command(staff_username, activity_log_id):
+    staff = Staff.query.filter_by(username=staff_username).first()
+    if not staff:
+        print(f'Staff {staff_username} not found!')
+        return
+
+    activity_log = ActivityLog.query.filter_by(logID=activity_log_id).first()
+    if not activity_log:
+        print(f'Activity log {activity_log_id} not found!')
+        return
+
+    if activity_log.status != 'pending':
+        print(f'Activity log {activity_log_id} is not in pending status! Current status: {activity_log.status}')
+        return
+
+    staff.rejectHours(activity_log_id)
+
+    print(f'Staff {staff_username} rejected activity log {activity_log_id}')
+    print(f'Hours rejected: {activity_log.hoursLogged}')
+    print(f'Activity: {activity_log.getDescription()}')
+    print('Status changed to: rejected')
+
 @app.cli.command("update-leaderboard",
                  help="Update leaderboard entries for all students")
 def update_leaderboard_command():

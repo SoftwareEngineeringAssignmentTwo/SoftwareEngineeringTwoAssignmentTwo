@@ -152,7 +152,7 @@ Total confirmed community service hours: 15
 1. 10 Hour Milestone
 ```
 
-### Additional Staff Command
+### Additional Staff Commands
 
 ```bash
 flask staff-confirm-hours [staff_username] [activity_log_id]
@@ -167,6 +167,29 @@ flask staff-confirm-hours [staff_username] [activity_log_id]
 **Example**:
 ```bash
 flask staff-confirm-hours staff1 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+```
+
+```bash
+flask staff-reject-hours [staff_username] [activity_log_id]
+```
+
+**Description**: Allows staff to reject student hours that are in pending status
+
+**Parameters**:
+- `staff_username` (default: staff1) - Username of the staff member
+- `activity_log_id` (required) - ID of the activity log to reject
+
+**Example**:
+```bash
+flask staff-reject-hours staff1 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+```
+
+**Example Output**:
+```
+Staff staff1 rejected activity log 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+Hours rejected: 15
+Activity: volunteered at local food bank
+Status changed to: rejected
 ```
 
 ## Complete Workflow Example
@@ -273,9 +296,10 @@ This implementation fully satisfies all required features:
 
 ## Status Tracking
 
-Activity logs have three possible statuses:
+Activity logs have four possible statuses:
 - **logged**: Initial status when hours are first recorded by staff
 - **pending**: Status after student requests confirmation  
 - **confirmed**: Hours have been verified and approved by staff
+- **rejected**: Hours have been reviewed and rejected by staff
 
 Only **confirmed** hours count toward the leaderboard rankings and accolade milestones.

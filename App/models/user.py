@@ -156,6 +156,12 @@ class Staff(User):
                             db.session.add(accolade)
             db.session.commit()
 
+    def rejectHours(self, activityLogID: str) -> None:
+        activity_log = ActivityLog.query.filter_by(logID=activityLogID).first()
+        if activity_log and activity_log.status == "pending":
+            activity_log.status = "rejected"
+            db.session.commit()
+
     def viewLeaderboard(self) -> list:
         return LeaderBoardEntry.query.all()
 

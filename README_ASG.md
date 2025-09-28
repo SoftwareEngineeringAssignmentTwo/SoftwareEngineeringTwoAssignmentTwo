@@ -32,21 +32,37 @@ The Student Incentive System allows staff to log community service hours for stu
 ```bash
 flask init
 ```
-**Description**: Creates and initializes the database with default users
+**Description**: Creates and initializes the database with default users and allows interactive creation of staff and student accounts
 - Creates sample users: bob, sally, rob
-- Creates students: student1, student2
-- Creates staff: staff1, staff2
+- Prompts for interactive creation of staff accounts
+- Prompts for interactive creation of student accounts
 - Sets up the database schema
 
 **Example Output**:
 ```
 Created user: bob
-Created student: student1
-Created student: student2
+Created user: sally  
+Created user: rob
+
+--- Create Staff Accounts ---
+Enter staff username (or 'exit' to quit): staff1
+Enter staff password: password123
 Created staff: staff1
-Created staff: staff2
+Enter staff username (or 'exit' to quit): exit
+
+--- Create Student Accounts ---
+Enter student username (or 'exit' to quit): student1
+Enter student password: mypassword
+Created student: student1
+Enter student username (or 'exit' to quit): exit
 database intialized
 ```
+
+**Interactive Features**:
+- Staff and students can create their own personalized usernames and passwords
+- Type 'exit' to finish creating accounts for each user type
+- System prevents duplicate usernames
+- Multiple accounts of each type can be created in one session
 
 ### 1. Staff Log Hours for Student
 

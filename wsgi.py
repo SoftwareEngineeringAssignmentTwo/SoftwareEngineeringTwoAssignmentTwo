@@ -44,37 +44,33 @@ def init():
     else:
         print('User rob already exists')
 
-    # Create students
-    if not Student.query.filter_by(username='student1').first():
-        student1 = Student(username='student1', password='student1pass')
-        db.session.add(student1)
-        print('Created student: student1')
-    else:
-        print('Student student1 already exists')
-        student1 = Student.query.filter_by(username='student1').first()
+    # Create staff accounts interactively
+    print("\n--- Create Staff Accounts ---")
+    while True:
+        staff_username = input("Enter staff username (or 'exit' to quit): ")
+        if staff_username == 'exit':
+            break
+        staff_password = input("Enter staff password: ")
+        if not Staff.query.filter_by(username=staff_username).first():
+            staff = Staff(username=staff_username, password=staff_password)
+            db.session.add(staff)
+            print(f'Created staff: {staff_username}')
+        else:
+            print(f'Staff {staff_username} already exists')
 
-    if not Student.query.filter_by(username='student2').first():
-        student2 = Student(username='student2', password='student2pass')
-        db.session.add(student2)
-        print('Created student: student2')
-    else:
-        print('Student student2 already exists')
-        student2 = Student.query.filter_by(username='student2').first()
-
-    # Create staff
-    if not Staff.query.filter_by(username='staff1').first():
-        staff1 = Staff(username='staff1', password='staff1pass')
-        db.session.add(staff1)
-        print('Created staff: staff1')
-    else:
-        print('Staff staff1 already exists')
-
-    if not Staff.query.filter_by(username='staff2').first():
-        staff2 = Staff(username='staff2', password='staff2pass')
-        db.session.add(staff2)
-        print('Created staff: staff2')
-    else:
-        print('Staff staff2 already exists')
+    # Create student accounts interactively
+    print("\n--- Create Student Accounts ---")
+    while True:
+        student_username = input("Enter student username (or 'exit' to quit): ")
+        if student_username == 'exit':
+            break
+        student_password = input("Enter student password: ")
+        if not Student.query.filter_by(username=student_username).first():
+            student = Student(username=student_username, password=student_password)
+            db.session.add(student)
+            print(f'Created student: {student_username}')
+        else:
+            print(f'Student {student_username} already exists')
     db.session.commit()
     print('database intialized')
 

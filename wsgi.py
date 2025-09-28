@@ -1,7 +1,7 @@
-import click
-import pytest
-import sys
-import uuid
+import click # This is used to create CLI commands
+import pytest # This is used to run tests
+import sys # This is used to exit the program
+import uuid # This is used to generate unique IDs for the users
 from flask.cli import AppGroup
 
 from App.database import get_migrate, db

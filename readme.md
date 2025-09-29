@@ -1,193 +1,321 @@
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/uwidcit/flaskmvc)
-<a href="https://render.com/deploy?repo=https://github.com/uwidcit/flaskmvc">
-  <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render">
-</a>
+# Student Incentive System
 
-![Tests](https://github.com/uwidcit/flaskmvc/actions/workflows/dev.yml/badge.svg)
+A Flask MVC command-line application for tracking student community service hours with staff oversight and student incentives.
 
-# Flask MVC Template
-A template for flask applications structured in the Model View Controller pattern [Demo](https://dcit-flaskmvc.herokuapp.com/). [Postman Collection](https://documenter.getpostman.com/view/583570/2s83zcTnEJ)
+## Project Overview
 
+The Student Incentive System allows staff to log community service hours for students, students to request confirmation of their hours, and provides a leaderboard system with milestone-based accolades to incentivize community service participation.
 
-# Dependencies
-* Python3/pip3
-* Packages listed in requirements.txt
+## Features
 
-# Installing Dependencies
-```bash
-$ pip install -r requirements.txt
-```
+1. **Staff Log Hours for Students** - Staff can record community service hours for students
+2. **Student Request Confirmation** - Students can request formal confirmation of logged hours  
+3. **View Student Leaderboard** - Display ranked list of students by confirmed hours
+4. **Student View Accolades** - Students can view earned milestones (10/25/50+ hours)
 
-# Configuration Management
+## Installation & Setup
 
+1. Clone this repository
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Initialize the database:
+   ```bash
+   flask init
+   ```
 
-Configuration information such as the database url/port, credentials, API keys etc are to be supplied to the application. However, it is bad practice to stage production information in publicly visible repositories.
-Instead, all config is provided by a config file or via [environment variables](https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/).
+## CLI Commands Documentation
 
-## In Development
-
-When running the project in a development environment (such as gitpod) the app is configured via default_config.py file in the App folder. By default, the config for development uses a sqlite database.
-
-default_config.py
-```python
-SQLALCHEMY_DATABASE_URI = "sqlite:///temp-database.db"
-SECRET_KEY = "secret key"
-JWT_ACCESS_TOKEN_EXPIRES = 7
-ENV = "DEVELOPMENT"
-```
-
-These values would be imported and added to the app in load_config() function in config.py
-
-config.py
-```python
-# must be updated to inlude addtional secrets/ api keys & use a gitignored custom-config file instad
-def load_config():
-    config = {'ENV': os.environ.get('ENV', 'DEVELOPMENT')}
-    delta = 7
-    if config['ENV'] == "DEVELOPMENT":
-        from .default_config import JWT_ACCESS_TOKEN_EXPIRES, SQLALCHEMY_DATABASE_URI, SECRET_KEY
-        config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-        config['SECRET_KEY'] = SECRET_KEY
-        delta = JWT_ACCESS_TOKEN_EXPIRES
-...
-```
-
-## In Production
-
-When deploying your application to production/staging you must pass
-in configuration information via environment tab of your render project's dashboard.
-
-![perms](./images/fig1.png)
-
-# Flask Commands
-
-wsgi.py is a utility script for performing various tasks related to the project. You can use it to import and test any code in the project. 
-You just need create a manager command function, for example:
-
-```python
-# inside wsgi.py
-
-user_cli = AppGroup('user', help='User object commands')
-
-@user_cli.cli.command("create-user")
-@click.argument("username")
-@click.argument("password")
-def create_user_command(username, password):
-    create_user(username, password)
-    print(f'{username} created!')
-
-app.cli.add_command(user_cli) # add the group to the cli
-
-```
-
-Then execute the command invoking with flask cli with command name and the relevant parameters
+### Database Initialization
 
 ```bash
-$ flask user create bob bobpass
+flask init
+```
+**Description**: Creates and initializes the database with default users and allows interactive creation of staff and student accounts
+- Creates sample users: bob, sally, rob
+- Prompts for interactive creation of staff accounts
+- Prompts for interactive creation of student accounts
+- Sets up the database schema
+
+**Example Output**:
+```
+Created user: bob
+Created user: sally  
+Created user: rob
+
+--- Create Staff Accounts ---
+Enter staff username (or 'exit' to quit): staff1
+Enter staff password: password123
+Created staff: staff1
+Enter staff username (or 'exit' to quit): exit
+
+--- Create Student Accounts ---
+Enter student username (or 'exit' to quit): student1
+Enter student password: mypassword
+Created student: student1
+Enter student username (or 'exit' to quit): exit
+database intialized
 ```
 
+**Interactive Features**:
+- Staff and students can create their own personalized usernames and passwords
+- Type 'exit' to finish creating accounts for each user type
+- System prevents duplicate usernames
+- Multiple accounts of each type can be created in one session
 
-# Running the Project
-
-_For development run the serve command (what you execute):_
-```bash
-$ flask run
-```
-
-_For production using gunicorn (what the production server executes):_
-```bash
-$ gunicorn wsgi:app
-```
-
-# Deploying
-You can deploy your version of this app to render by clicking on the "Deploy to Render" link above.
-
-# Initializing the Database
-When connecting the project to a fresh empty database ensure the appropriate configuration is set then file then run the following command. This must also be executed once when running the app on heroku by opening the heroku console, executing bash and running the command in the dyno.
-
-```bash
-$ flask init
-```
-
-# Database Migrations
-If changes to the models are made, the database must be'migrated' so that it can be synced with the new models.
-Then execute following commands using manage.py. More info [here](https://flask-migrate.readthedocs.io/en/latest/)
-
-```bash
-$ flask db init
-$ flask db migrate
-$ flask db upgrade
-$ flask db --help
-```
-
-# Testing
-
-## Unit & Integration
-Unit and Integration tests are created in the App/test. You can then create commands to run them. Look at the unit test command in wsgi.py for example
-
-```python
-@test.command("user", help="Run User tests")
-@click.argument("type", default="all")
-def user_tests_command(type):
-    if type == "unit":
-        sys.exit(pytest.main(["-k", "UserUnitTests"]))
-    elif type == "int":
-        sys.exit(pytest.main(["-k", "UserIntegrationTests"]))
-    else:
-        sys.exit(pytest.main(["-k", "User"]))
-```
-
-You can then execute all user tests as follows
+### 1. Staff Log Hours for Student
 
 ```bash
-$ flask test user
+flask staff-log-hours [staff_username] [student_username] [hours] [activity]
 ```
 
-You can also supply "unit" or "int" at the end of the comand to execute only unit or integration tests.
+**Description**: Allows staff members to log community service hours for students
 
-You can run all application tests with the following command
+**Parameters**:
+- `staff_username` (default: staff1) - Username of the staff member
+- `student_username` (default: student1) - Username of the student
+- `hours` (default: 10) - Number of hours to log
+- `activity` (default: community service) - Description of the activity
+
+**Example**:
+```bash
+flask staff-log-hours staff1 student1 15 "volunteered at local food bank"
+```
+
+**Example Output**:
+```
+Staff staff1 logged 15 hours for student student1
+Activity: volunteered at local food bank
+Log ID: 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+```
+
+### 2. Student Request Confirmation of Hours
 
 ```bash
-$ pytest
+flask request-confirmation [student_username] [activity_log_id]
 ```
 
-## Test Coverage
+**Description**: Enables students to request formal confirmation of their logged hours by staff
 
-You can generate a report on your test coverage via the following command
+**Parameters**:
+- `student_username` (default: student1) - Username of the student
+- `activity_log_id` (required) - ID of the activity log to request confirmation for
+
+**Example**:
+```bash
+flask request-confirmation student1 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+```
+
+**Example Output**:
+```
+Student student1 requested confirmation for activity log 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+Status changed to: pending
+```
+
+### 3. View Student Leaderboard
 
 ```bash
-$ coverage report
+flask view-leaderboard
 ```
 
-You can also generate a detailed html report in a directory named htmlcov with the following comand
+**Description**: Displays a ranked leaderboard of all students based on their confirmed community service hours
+
+**Parameters**: None
+
+**Example**:
+```bash
+flask view-leaderboard
+```
+
+**Example Output**:
+```
+Student Leaderboard (Ranked by Confirmed Community Service Hours):
+======================================================================
+1. student2 - 30 hours - 0 accolades
+2. student1 - 15 hours - 0 accolades
+```
+
+### 4. Student View Accolades
 
 ```bash
-$ coverage html
+flask view-accolades [student_username]
 ```
 
-# Troubleshooting
+**Description**: Shows milestone accolades earned by a student based on confirmed hours
 
-## Views 404ing
+**Parameters**:
+- `student_username` (default: student1) - Username of the student
 
-If your newly created views are returning 404 ensure that they are added to the list in main.py.
+**Available Milestones**:
+- 10 Hour Milestone
+- 25 Hour Milestone  
+- 50 Hour Milestone
+- 100 Hour Milestone
+- 200 Hour Milestone
+- 300 Hour Milestone
 
-```python
-from App.views import (
-    user_views,
-    index_views
-)
-
-# New views must be imported and added to this list
-views = [
-    user_views,
-    index_views
-]
+**Example**:
+```bash
+flask view-accolades student1
 ```
 
-## Cannot Update Workflow file
+**Example Output**:
+```
+Accolades for student1:
+Total confirmed community service hours: 15
+==================================================
+1. 10 Hour Milestone
+```
 
-If you are running into errors in gitpod when updateding your github actions file, ensure your [github permissions](https://gitpod.io/integrations) in gitpod has workflow enabled ![perms](./images/gitperms.png)
+### Additional Staff Commands
 
-## Database Issues
+```bash
+flask staff-confirm-hours [staff_username] [activity_log_id]
+```
 
-If you are adding models you may need to migrate the database with the commands given in the previous database migration section. Alternateively you can delete you database file.
+**Description**: Allows staff to confirm student hours that are in pending status
+
+**Parameters**:
+- `staff_username` (default: staff1) - Username of the staff member
+- `activity_log_id` (required) - ID of the activity log to confirm
+
+**Example**:
+```bash
+flask staff-confirm-hours staff1 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+```
+
+```bash
+flask staff-reject-hours [staff_username] [activity_log_id]
+```
+
+**Description**: Allows staff to reject student hours that are in pending status
+
+**Parameters**:
+- `staff_username` (default: staff1) - Username of the staff member
+- `activity_log_id` (required) - ID of the activity log to reject
+
+**Example**:
+```bash
+flask staff-reject-hours staff1 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+```
+
+**Example Output**:
+```
+Staff staff1 rejected activity log 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+Hours rejected: 15
+Activity: volunteered at local food bank
+Status changed to: rejected
+```
+
+## Complete Workflow Example
+
+Here's a complete example of the system workflow:
+
+```bash
+# 1. Initialize the database
+flask init
+
+# 2. Staff logs hours for a student
+flask staff-log-hours staff1 student1 15 "volunteered at local food bank"
+# Output: Log ID: 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+
+# 3. Student requests confirmation
+flask request-confirmation student1 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+
+# 4. Staff confirms the hours
+flask staff-confirm-hours staff1 9f58af47-11d3-4aef-9d3f-f840a2cc05bd
+
+# 5. View updated leaderboard
+flask view-leaderboard
+
+# 6. Student views their accolades
+flask view-accolades student1
+```
+
+## ⚠️ Important Note About Log IDs
+
+**When using the system, you MUST use the actual Log ID that gets generated!**
+
+Each time you run `flask staff-log-hours`, the system generates a unique Log ID. You must copy this exact ID (not the example one shown above) and use it in the subsequent `request-confirmation` and `staff-confirm-hours` commands.
+
+**Example of what to do:**
+
+1. Run the staff-log-hours command:
+   ```bash
+   flask staff-log-hours staff1 student1 15 "volunteered at local food bank"
+   ```
+   
+2. Copy the actual Log ID from the output (e.g., `c396d501-6933-4d53-9ccd-f627d7aca836`)
+
+3. Use that real Log ID in the next commands:
+   ```bash
+   flask request-confirmation student1 c396d501-6933-4d53-9ccd-f627d7aca836
+   flask staff-confirm-hours staff1 c396d501-6933-4d53-9ccd-f627d7aca836
+   ```
+
+If you use the wrong Log ID, you'll get errors like "Activity log not found!"
+
+## System Architecture
+
+### Models
+- **User**: Base user model with authentication
+- **Student**: Extends User, tracks community service hours
+- **Staff**: Extends User, can log and confirm hours for students
+- **ActivityLog**: Records community service activities with confirmation status
+- **Accolade**: Milestone achievements based on confirmed hours
+- **LeaderBoardEntry**: Ranking system for student comparison
+
+### Key Features
+- **Hour Tracking**: Only confirmed hours count toward leaderboard and accolades
+- **Approval Workflow**: Hours must be requested for confirmation by students and approved by staff
+- **Milestone System**: Automatic accolade calculation based on confirmed hours
+- **Leaderboard**: Real-time ranking of students by confirmed community service hours
+
+## Technical Requirements
+
+- Python 3.9.x or Python 3.10.x
+- Flask
+- SQLAlchemy
+- Click (for CLI)
+- SQLite (default database)
+
+## Testing
+
+Additional commands for testing:
+
+```bash
+# User management
+flask user create [username] [password]
+flask user list [format]
+
+# Run tests
+flask test user [type]
+```
+
+## Database Schema
+
+The system uses SQLAlchemy models with the following key relationships:
+- Students have many ActivityLogs
+- ActivityLogs track hours and confirmation status
+- Accolades are awarded based on confirmed hour milestones
+- LeaderBoard entries rank students by total confirmed hours
+
+## Assignment Requirements Fulfillment
+
+This implementation fully satisfies all required features:
+
+✅ **(Staff) Log hours for student** - Implemented via `flask staff-log-hours` command  
+✅ **(Student) Request confirmation of hours (by staff)** - Implemented via `flask request-confirmation` command  
+✅ **View Student Leaderboard** - Implemented via `flask view-leaderboard` command  
+✅ **(Student) View accolades (10/25/50 hours milestones)** - Implemented via `flask view-accolades` command
+
+## Status Tracking
+
+Activity logs have four possible statuses:
+- **logged**: Initial status when hours are first recorded by staff
+- **pending**: Status after student requests confirmation  
+- **confirmed**: Hours have been verified and approved by staff
+- **rejected**: Hours have been reviewed and rejected by staff
+
+Only **confirmed** hours count toward the leaderboard rankings and accolade milestones.

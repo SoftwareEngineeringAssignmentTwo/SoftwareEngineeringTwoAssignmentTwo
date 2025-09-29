@@ -1,6 +1,6 @@
 from werkzeug.security import check_password_hash, generate_password_hash
-from App.database import db
-from datetime import datetime
+from App.database import db 
+from datetime import datetime 
 import uuid   # This is used to generate unique IDs for the users
 
 class User(db.Model):
@@ -149,7 +149,7 @@ class Staff(User):
                             accolade = Accolade(
                                 accoladeID=str(uuid.uuid4()),
                                 studentID=student.studentID,
-                                name=f"{milestone} Hours Volunteer",
+                                name=f"{milestone} Hour Milestone",
                                 milestoneHours=milestone,
                                 dateAwarded=datetime.utcnow()
                             )

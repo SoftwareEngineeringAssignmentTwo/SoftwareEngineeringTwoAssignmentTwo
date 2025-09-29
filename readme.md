@@ -32,15 +32,23 @@ The Student Incentive System allows staff to log community service hours for stu
 ```bash
 flask init
 ```
+<<<<<<< HEAD
 **Description**: Creates and initializes the database with default users and allows interactive creation of staff and student accounts
 - Creates sample users: bob, sally, rob
 - Prompts for interactive creation of staff accounts
 - Prompts for interactive creation of student accounts
+=======
+**Description**: Creates and initializes the database with default users
+- Creates sample users: bob, sally, rob
+- Creates students: student1, student2
+- Creates staff: staff1, staff2
+>>>>>>> fc0b56c0a6679ed14ff4f1881c84d0a14ebf7d28
 - Sets up the database schema
 
 **Example Output**:
 ```
 Created user: bob
+<<<<<<< HEAD
 Created user: sally  
 Created user: rob
 
@@ -64,6 +72,15 @@ database intialized
 - System prevents duplicate usernames
 - Multiple accounts of each type can be created in one session
 
+=======
+Created student: student1
+Created student: student2
+Created staff: staff1
+Created staff: staff2
+database intialized
+```
+
+>>>>>>> fc0b56c0a6679ed14ff4f1881c84d0a14ebf7d28
 ### 1. Staff Log Hours for Student
 
 ```bash
@@ -274,7 +291,11 @@ If you use the wrong Log ID, you'll get errors like "Activity log not found!"
 
 ## Technical Requirements
 
+<<<<<<< HEAD
 - Python 3.9.x or Python 3.10.x
+=======
+- Python 3.x
+>>>>>>> fc0b56c0a6679ed14ff4f1881c84d0a14ebf7d28
 - Flask
 - SQLAlchemy
 - Click (for CLI)

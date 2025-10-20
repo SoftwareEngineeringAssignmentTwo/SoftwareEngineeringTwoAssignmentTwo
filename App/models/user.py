@@ -26,6 +26,11 @@ class User(db.Model):
             'username': self.username
         }
 
+    @property
+    def id(self):
+        """Provide a convenient `id` property expected by views and JWT identity usage."""
+        return self.userID
+
     def set_password(self, password):
         """Create hashed password."""
         self.password = generate_password_hash(password)

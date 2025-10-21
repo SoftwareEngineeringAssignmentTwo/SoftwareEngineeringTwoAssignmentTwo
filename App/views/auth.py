@@ -27,7 +27,7 @@ def identify_page():
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
-    token = login(data['username'], data['password'])
+    token = login(data['username'], data['password'], data.get('user_type'))
     response = redirect(request.referrer)
     if not token:
         flash('Bad username or password given'), 401

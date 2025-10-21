@@ -7,7 +7,9 @@ from App.controllers import (
     create_user,
     get_all_users,
     get_all_users_json,
-    jwt_required
+    jwt_required,
+    create_staff,
+    create_student
 )
 
 user_views = Blueprint('user_views', __name__, template_folder='../templates')
@@ -38,3 +40,19 @@ def create_user_endpoint():
 @user_views.route('/static/users', methods=['GET'])
 def static_user_page():
   return send_from_directory('static', 'static-user.html')
+
+@user_views.route('/api/students', methods=['POST'])
+def create_student_endpoint():
+    data = request.json
+    student = create_student(data['username'], data['password'])
+    if student:
+        return jsonify({'message': f"Student {student.username} successfully created with id {student.id}"})
+    return jsonify({'error': 'Failed to create student user'}), 400
+
+@user_views.route('/api/staff', methods=['POST'])
+def create_staff_endpoint():
+    data = request.json
+    staff = create_staff(data['username'], data['password'])
+    if staff:
+        return jsonify({'message': f"Staff {staff.username} successfully created with id {staff.id}"}), 201
+    return jsonify({'error': 'Failed to create staff user'}), 400

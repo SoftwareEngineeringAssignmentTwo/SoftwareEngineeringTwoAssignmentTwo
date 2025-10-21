@@ -1,16 +1,32 @@
-from flask_jwt_extended import create_access_token, jwt_required, JWTManager, get_jwt_identity, verify_jwt_in_request
+from functools import wraps
+from flask import jsonify
+from flask_jwt_extended import create_access_token, current_user, jwt_required, JWTManager, get_jwt_identity, verify_jwt_in_request
 
 from App.models import User
 from App.database import db
 
-def login(username, password):
+def login(username, password, user_type):
   result = db.session.execute(db.select(User).filter_by(username=username))
   user = result.scalar_one_or_none()
-  if user and user.check_password(password):
+  if user and user.check_password(password) and user.user_type == user_type:
     # Store ONLY the user id as a string in JWT 'sub'
     return create_access_token(identity=str(user.userID))
   return None
 
+def login_required(required_class):
+  def decorator(f):
+    @wraps(f)
+    @jwt_required()
+    def decorated_function(*args, **kwargs):
+      #Check if current_user is an instance of the required class
+      if not isinstance(current_user, required_class):
+        return jsonify({
+          'error': 'Unauthorized access',
+          'message': f'User must be an instance of {required_class.__name__} to access this resource.'
+        }), 401
+      return f(*args, **kwargs)
+    return decorated_function
+  return decorator 
 
 def setup_jwt(app):
   jwt = JWTManager(app)

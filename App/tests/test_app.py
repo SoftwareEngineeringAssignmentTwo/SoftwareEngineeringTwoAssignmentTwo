@@ -32,9 +32,9 @@ class UserUnitTests(unittest.TestCase):
 
     def test_create_log(self):
         newActivity = ActivityLog("816000001","5","First Day")
-        assert newAvtivity.studentID == "816000001"
-        assert newAvtivity.hoursLogged == "5"
-        assert newAvtivity.description == "First Day"
+        assert newActivity.studentID == "816000001"
+        assert newActivity.hoursLogged == "5"
+        assert newActivity.description == "First Day"
 
     def test_create_user(self):
         newUser = User("John Doe", "12345")
@@ -56,33 +56,77 @@ def empty_db():
     yield app.test_client()
     db.drop_all()
 
-
 def test_authenticate():
     user = create_user("bob", "bobpass")
     assert login("bob", "bobpass") != None
 
 class UsersIntegrationTests(unittest.TestCase):
 
-    def test_create_user(self):
-        user = create_user("rick", "bobpass")
-        assert user.username == "rick"
+    def test_student_workflow(self):
+        student = create_user("alice", "alicepass", user_type="student")
+        staff = create_user("admin", "adminpass", user_type="staff")
+        log = Staff.logHoursForStudent(student.studentID, 5, "Volunteering")
+        self.assertEqual(log.status, "logged")
+        # Simulate student requesting confirmation
+        log.status = "pending"
+        db.session.commit()
+        Staff.confirmHours(self, log.logID)
+        updated_log = ActivityLog.query.filter_by(logID=log.logID).first()
+        self.assertEqual(updated_log.status, "confirmed")
+   
+    def test_accolade_awarding(self):
+        student = create_user("charlie", "charliepass", user_type="student")
+        staff = create_user("admin2", "adminpass2", user_type="staff")
+        # Log hours to reach milestone
+        log = Staff.logHoursForStudent(student.studentID, 50, "Community Service")
+        log.status = "pending"
+        db.session.commit()
+        Staff.confirmHours(self, log.logID)
+        # Check if accolade awarded
+        accolade = Accolade.query.filter_by(studentID=student.studentID, milestoneHours=50).first()
+        self.assertIsNotNone(accolade)
+    
+    def test_leaderboard_ranking(self):
+        student1 = create_user("dave", "davepass", user_type="student")
+        staff = create_user("admin3", "adminpass3", user_type="staff")
+        log1 = Staff.logHoursForStudent(student1.studentID, 30, "Volunteering")
+        log2 = Staff.logHoursForStudent(student1.studentID, 20, "Community Service")
+        log1.status = "pending"
+        log2.status = "pending"
+        db.session.commit()
+        Staff.confirmHours(self, log1.logID)
+        Staff.confirmHours(self, log2.logID)
+        # Check leaderboard ranking
+        entry = LeaderBoardEntry.query.filter_by(studentID=student1.studentID).first()
+        self.assertEqual(entry.totalHours, 50)
 
-    def test_get_all_users_json(self):
-        users_json = get_all_users_json()
-        # Check that we have users and they have the expected structure
-        assert len(users_json) >= 2
-        assert all('id' in user and 'username' in user for user in users_json)
-
-    # Tests data changes in the database
-    def test_update_user(self):
-        # Create a user and get their actual ID
-        user = create_user("test_user", "testpass")
-        user_id = user.userID
+    def test_staff_authentication(self):
+        staff = create_user("eve", "evepass", user_type="staff")
+        token = login("eve", "evepass")
+        self.assertIsNotNone(token)
+    
+    def test_hour_rejection_workflow(self):
+        student = create_user("frank", "frankpass", user_type="student")
+        staff = create_user("admin4", "adminpass4", user_type="staff")
+        log = Staff.logHoursForStudent(student.studentID, 10, "Event Help")
+        log.status = "pending"
+        db.session.commit()
+        # Simulate staff rejecting hours
+        activity_log = ActivityLog.query.filter_by(logID=log.logID).first()
+        if activity_log and activity_log.status == "pending":
+            activity_log.status = "rejected"
+            db.session.commit()
         
-        # Update the user
-        update_user(user_id, "updated_user")
-        updated_user = get_user(user_id)
-        assert updated_user is not None
-        assert updated_user.username == "updated_user"
+
+
+
+    
+
+
+
+
+
+
+
         
 

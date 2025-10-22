@@ -5,12 +5,13 @@ from flask_jwt_extended import create_access_token, current_user, jwt_required, 
 from App.models import User
 from App.database import db
 
-def login(username, password, user_type):
+def login(username, password, user_type=None):
   result = db.session.execute(db.select(User).filter_by(username=username))
   user = result.scalar_one_or_none()
-  if user and user.check_password(password) and user.user_type == user_type:
-    # Store ONLY the user id as a string in JWT 'sub'
-    return create_access_token(identity=str(user.userID))
+  if user and user.check_password(password):
+    if user_type is None or user.user_type == user_type:
+        # Store ONLY the user id as a string in JWT 'sub'
+        return create_access_token(identity=str(user.userID))
   return None
 
 def login_required(required_class):

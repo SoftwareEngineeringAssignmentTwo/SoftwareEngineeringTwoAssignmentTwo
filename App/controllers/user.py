@@ -1,8 +1,19 @@
-from App.models import User
+from App.models import User, Student, Staff
 from App.database import db
 
-def create_user(username, password):
-    newuser = User(username=username, password=password)
+def create_user(username, password, user_type=None):
+    """Create a user. If user_type is 'student' or 'staff' create the appropriate subclass."""
+    # If username already exists, return the existing user instead of attempting to insert a duplicate
+    existing = get_user_by_username(username)
+    if existing:
+        return existing
+
+    if user_type == 'student':
+        newuser = Student(username=username, password=password)
+    elif user_type == 'staff':
+        newuser = Staff(username=username, password=password)
+    else:
+        newuser = User(username=username, password=password)
     try: 
         db.session.add(newuser)
         db.session.commit()
@@ -13,7 +24,7 @@ def create_user(username, password):
         return None
 
 def create_staff(username, password):
-    newstaff = User(username=username, password=password)
+    newstaff = Staff(username=username, password=password)
     try:
         db.session.add(newstaff)
         db.session.commit()
@@ -24,7 +35,7 @@ def create_staff(username, password):
         return None
 
 def create_student(username, password):
-    newstudent = User(username=username, password=password)
+    newstudent = Student(username=username, password=password)
     try:
         db.session.add(newstudent)
         db.session.commit()

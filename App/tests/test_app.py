@@ -32,9 +32,9 @@ class UserUnitTests(unittest.TestCase):
 
     def test_create_log(self):
         newActivity = ActivityLog("816000001","5","First Day")
-        assert newAvtivity.studentID == "816000001"
-        assert newAvtivity.hoursLogged == "5"
-        assert newAvtivity.description == "First Day"
+        assert newActivity.studentID == "816000001"
+        assert newActivity.hoursLogged == "5"
+        assert newActivity.description == "First Day"
 
     def test_create_user(self):
         newUser = User("John Doe", "12345")
@@ -56,33 +56,54 @@ def empty_db():
     yield app.test_client()
     db.drop_all()
 
-
 def test_authenticate():
     user = create_user("bob", "bobpass")
     assert login("bob", "bobpass") != None
 
-class UsersIntegrationTests(unittest.TestCase):
+class StudentStaffIntegrationTests(unittest.TestCase):
+    #Student workflow tests
+    def test_student_workflow(self):
+        #Create staff and student
+        staff = Staff("ada", "lovelace")
+        student = Student("alan", "turing")
+        db.session.add(staff)
+        db.session.add(student)
+        db.session.commit()
 
-    def test_create_user(self):
-        user = create_user("rick", "bobpass")
-        assert user.username == "rick"
+        #Staff logs hours for students
+        activity_log = staff_log_hours ("ada", "alan", 15, "Flask-Dev")
+        assert activity_log is not None
+        assert activity_log.hoursLogged == 15
+        assert activity_log.status == "logged"
 
-    def test_get_all_users_json(self):
-        users_json = get_all_users_json()
-        # Check that we have users and they have the expected structure
-        assert len(users_json) >= 2
-        assert all('id' in user and 'username' in user for user in users_json)
+        #Student Confirmation Request
+        student.requestConfirmationOfHours(activity_log.logID)
+        db.session.commit()
 
-    # Tests data changes in the database
-    def test_update_user(self):
-        # Create a user and get their actual ID
-        user = create_user("test_user", "testpass")
-        user_id = user.userID
-        
-        # Update the user
-        update_user(user_id, "updated_user")
-        updated_user = get_user(user_id)
-        assert updated_user is not None
-        assert updated_user.username == "updated_user"
+        #Verify student hours
+        updated_log = ActivityLog.query.filter_by(logID=activity_log.logID).first()
+        assert updated_log.status == "pending"
+
+        #Staff confirms hours
+        confirmed_log = staff_confirm_hours("ada", activity_log.logID)
+        assert confirmed_log is not None
+        assert confirmed_log.status == "confirmed"
+
+        #Verify update to Student hours
+        updated_student = Student.query.filter_by(username = "alan").first()
+        assert updated_student.totalHours == 15
+
+    #Accolade testing 😭
+    def test_accolade_awarding(self):
+
+
+    
+
+
+
+
+
+
+
         
 

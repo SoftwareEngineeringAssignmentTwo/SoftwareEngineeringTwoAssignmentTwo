@@ -95,6 +95,40 @@ class StudentStaffIntegrationTests(unittest.TestCase):
 
     #Accolade testing 😭
     def test_accolade_awarding(self):
+        #Create staff and student
+        staff = Staff("gyro", "zeppeli")
+        student = Student("johnny", "joestar")
+        db.session.add(staff)
+        db.session.add(student)
+        db.session.commit()
+
+        #Artificially triggering first milestone
+        log1 = staff_log_hours("gyro", "johnny", 10, "first_milestone")
+        student.requestConfirmationOfHours(log1.logID)
+        db.session.commit()
+        staff_confirm_hours("gyro", log1.logID)
+
+        #Check accolade
+        accolades_test = view_accolades("johnny")
+        assert accolades_test is not None
+        assert accolades_test['total_hours'] == 10
+        assert len(accolades_test['accolades']) == 1
+        assert "10 Hour Milestone" in accolades_test['accolades']
+
+        #Artificially triggering second milestone
+        log2 = staff_log_hours("gyro", "johnny", 15, "first_milestone")
+        student.requestConfirmationOfHours(log2.logID)
+        db.session.commit()
+        staff_confirm_hours("gyro", log2.logID)
+
+        #Check accolade
+        accolades_test = view_accolades("johnny")
+        assert accolades_test is not None
+        assert accolades_test['total_hours'] == 25
+        assert len(accolades_test['accolades']) == 2
+        assert "25 Hour Milestone" in accolades_test['accolades']
+        
+
 
 
     

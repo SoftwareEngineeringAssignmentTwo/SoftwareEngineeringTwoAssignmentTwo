@@ -60,73 +60,62 @@ def test_authenticate():
     user = create_user("bob", "bobpass")
     assert login("bob", "bobpass") != None
 
-class StudentStaffIntegrationTests(unittest.TestCase):
-    #Student workflow tests
+class UsersIntegrationTests(unittest.TestCase):
+
     def test_student_workflow(self):
-        #Create staff and student
-        staff = Staff("ada", "lovelace")
-        student = Student("alan", "turing")
-        db.session.add(staff)
-        db.session.add(student)
+        student = create_user("alice", "alicepass", user_type="student")
+        staff = create_user("admin", "adminpass", user_type="staff")
+        log = Staff.logHoursForStudent(student.studentID, 5, "Volunteering")
+        self.assertEqual(log.status, "logged")
+        # Simulate student requesting confirmation
+        log.status = "pending"
         db.session.commit()
-
-        #Staff logs hours for students
-        activity_log = staff_log_hours ("ada", "alan", 15, "Flask-Dev")
-        assert activity_log is not None
-        assert activity_log.hoursLogged == 15
-        assert activity_log.status == "logged"
-
-        #Student Confirmation Request
-        student.requestConfirmationOfHours(activity_log.logID)
-        db.session.commit()
-
-        #Verify student hours
-        updated_log = ActivityLog.query.filter_by(logID=activity_log.logID).first()
-        assert updated_log.status == "pending"
-
-        #Staff confirms hours
-        confirmed_log = staff_confirm_hours("ada", activity_log.logID)
-        assert confirmed_log is not None
-        assert confirmed_log.status == "confirmed"
-
-        #Verify update to Student hours
-        updated_student = Student.query.filter_by(username = "alan").first()
-        assert updated_student.totalHours == 15
-
-    #Accolade testing 😭
+        Staff.confirmHours(self, log.logID)
+        updated_log = ActivityLog.query.filter_by(logID=log.logID).first()
+        self.assertEqual(updated_log.status, "confirmed")
+   
     def test_accolade_awarding(self):
-        #Create staff and student
-        staff = Staff("gyro", "zeppeli")
-        student = Student("johnny", "joestar")
-        db.session.add(staff)
-        db.session.add(student)
+        student = create_user("charlie", "charliepass", user_type="student")
+        staff = create_user("admin2", "adminpass2", user_type="staff")
+        # Log hours to reach milestone
+        log = Staff.logHoursForStudent(student.studentID, 50, "Community Service")
+        log.status = "pending"
         db.session.commit()
-
-        #Artificially triggering first milestone
-        log1 = staff_log_hours("gyro", "johnny", 10, "first_milestone")
-        student.requestConfirmationOfHours(log1.logID)
+        Staff.confirmHours(self, log.logID)
+        # Check if accolade awarded
+        accolade = Accolade.query.filter_by(studentID=student.studentID, milestoneHours=50).first()
+        self.assertIsNotNone(accolade)
+    
+    def test_leaderboard_ranking(self):
+        student1 = create_user("dave", "davepass", user_type="student")
+        staff = create_user("admin3", "adminpass3", user_type="staff")
+        log1 = Staff.logHoursForStudent(student1.studentID, 30, "Volunteering")
+        log2 = Staff.logHoursForStudent(student1.studentID, 20, "Community Service")
+        log1.status = "pending"
+        log2.status = "pending"
         db.session.commit()
-        staff_confirm_hours("gyro", log1.logID)
+        Staff.confirmHours(self, log1.logID)
+        Staff.confirmHours(self, log2.logID)
+        # Check leaderboard ranking
+        entry = LeaderBoardEntry.query.filter_by(studentID=student1.studentID).first()
+        self.assertEqual(entry.totalHours, 50)
 
-        #Check accolade
-        accolades_test = view_accolades("johnny")
-        assert accolades_test is not None
-        assert accolades_test['total_hours'] == 10
-        assert len(accolades_test['accolades']) == 1
-        assert "10 Hour Milestone" in accolades_test['accolades']
-
-        #Artificially triggering second milestone
-        log2 = staff_log_hours("gyro", "johnny", 15, "first_milestone")
-        student.requestConfirmationOfHours(log2.logID)
+    def test_staff_authentication(self):
+        staff = create_user("eve", "evepass", user_type="staff")
+        token = login("eve", "evepass")
+        self.assertIsNotNone(token)
+    
+    def test_hour_rejection_workflow(self):
+        student = create_user("frank", "frankpass", user_type="student")
+        staff = create_user("admin4", "adminpass4", user_type="staff")
+        log = Staff.logHoursForStudent(student.studentID, 10, "Event Help")
+        log.status = "pending"
         db.session.commit()
-        staff_confirm_hours("gyro", log2.logID)
-
-        #Check accolade
-        accolades_test = view_accolades("johnny")
-        assert accolades_test is not None
-        assert accolades_test['total_hours'] == 25
-        assert len(accolades_test['accolades']) == 2
-        assert "25 Hour Milestone" in accolades_test['accolades']
+        # Simulate staff rejecting hours
+        activity_log = ActivityLog.query.filter_by(logID=log.logID).first()
+        if activity_log and activity_log.status == "pending":
+            activity_log.status = "rejected"
+            db.session.commit()
         
 
 

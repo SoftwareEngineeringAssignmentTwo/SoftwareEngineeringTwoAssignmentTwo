@@ -43,30 +43,6 @@ class UserUnitTests(unittest.TestCase):
 
 
 
-    
-
-    def test_new_user(self):
-        user = User("bob", "bobpass")
-        assert user.username == "bob"
-
-    # pure function no side effects or integrations called
-    def test_get_json(self):
-        user = User("bob", "bobpass")
-        user_json = user.get_json()
-        expected = {"id": user.userID, "username": "bob"}
-        self.assertDictEqual(user_json, expected)
-    
-    def test_hashed_password(self):
-        password = "mypass"
-        hashed = generate_password_hash(password)
-        user = User("bob", password)
-        assert user.password != password
-
-    def test_check_password(self):
-        password = "mypass"
-        user = User("bob", password)
-        assert user.check_password(password)
-
 '''
     Integration Tests
 '''

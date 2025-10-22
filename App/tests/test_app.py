@@ -20,28 +20,35 @@ LOGGER = logging.getLogger(__name__)
    Unit Tests
 '''
 class UserUnitTests(unittest.TestCase):
+
+    def test_new_student(self):
+        user = User("john", "johnpass")
+        assert user.username == "john"
+
+    # pure function no side effects or integrations called
+    def test_get_json(self):
+        user = User("john", "johnpass")
+        user_json = user.get_json()
+        expected = {"id": user.userID, "username": "john"}
+        self.assertDictEqual(user_json, expected)
+
+    def test_staff_log_hours(self):
+        user = User("816000001", "5", "Community Service")
+        assert user.studentID == "816000001"
+        assert user.hoursLogged == "5"
+        assert user.description == "Community Service"
+
+    def test_accolade_creation(self):
+        user = User("50 Hour Milestone", "50")
+        assert user.name == "50 Hour Milestone"
+        assert user.milestoneHours = "50"
+
+    def test_leaderboard_entry_update(self):
+        user = User("john", "johnpass")
+        user_json = user.get_json()
+        expected = {"id": user.userID, "username": "john"}
+        self.assertDictEqual(user_json, expected)
     
-    def test_create_accolade(self):
-        accolade = Accolade("newbie", "10")
-        assert accolade.name == "newbie"
-        assert accolade.milestoneHours == "10"
-
-    def test_change_password(self):
-        newPassword = User.changePassword("12345", "54321")
-        assert user.userPassword == "54321"
-
-    def test_create_log(self):
-        newActivity = ActivityLog("816000001","5","First Day")
-        assert newActivity.studentID == "816000001"
-        assert newActivity.hoursLogged == "5"
-        assert newActivity.description == "First Day"
-
-    def test_create_user(self):
-        newUser = User("John Doe", "12345")
-        assert newUser.userName == "John Doe"
-        assert newUser.userPassword == "12345"
-
-
 
 '''
     Integration Tests

@@ -33,22 +33,18 @@ class UserUnitTests(unittest.TestCase):
         self.assertDictEqual(user_json, expected)
 
     def test_staff_log_hours(self):
-        user = User("816000001", "5", "Community Service")
-        assert user.studentID == "816000001"
-        assert user.hoursLogged == "5"
-        assert user.description == "Community Service"
+        log = Staff.logHoursForStudent("staffID", 5, "Community Service")
+        self.assertEqual(log.status, "logged")
 
     def test_accolade_creation(self):
-        user = User("50 Hour Milestone", "50")
-        assert user.name == "50 Hour Milestone"
-        assert user.milestoneHours = "50"
+        accolade = Accolade.createAccolade("50 Hour Milestone", 50)
+        self.assertEqual(accolade.milestoneHours, 50)
 
     def test_leaderboard_entry_update(self):
         user = User("john", "johnpass")
         user_json = user.get_json()
         expected = {"id": user.userID, "username": "john"}
         self.assertDictEqual(user_json, expected)
-    
 
 '''
     Integration Tests

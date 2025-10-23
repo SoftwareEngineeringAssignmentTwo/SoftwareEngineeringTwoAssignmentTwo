@@ -22,7 +22,7 @@ from App.controllers import (
     staff_reject_hours,
     update_leaderboard
 )
-from App.models.user import Student, LeaderBoardEntry, Accolade, ActivityLog, Staff
+from App.models import Student, LeaderBoardEntry, Accolade, ActivityLog, Staff
 
 # This commands file allow you to create convenient CLI commands for testing controllers
 

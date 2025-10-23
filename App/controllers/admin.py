@@ -33,10 +33,16 @@ def request_confirmation(student_username, activity_log_id):
     student = Student.query.filter_by(username=student_username).first()
     if not student:
         return None
-    activity_log = ActivityLog.query.filter_by(logID=activity_log_id, studentID=student.studentID).first()
+    # If no specific log id provided, pick the most recent 'logged' entry for the student
+    activity_log = None
+    if activity_log_id:
+        activity_log = ActivityLog.query.filter_by(logID=activity_log_id, studentID=student.studentID).first()
+    if not activity_log:
+        activity_log = ActivityLog.query.filter_by(studentID=student.studentID, status='logged').order_by(ActivityLog.dateLogged.desc()).first()
     if not activity_log:
         return None
-    student.requestConfirmationOfHours(activity_log_id)
+    # request confirmation using the resolved activity_log id
+    student.requestConfirmationOfHours(activity_log.logID)
     db.session.commit()
     return activity_log
 
@@ -71,12 +77,18 @@ def staff_confirm_hours(staff_username, activity_log_id):
     staff = Staff.query.filter_by(username=staff_username).first()
     if not staff:
         return None
-    activity_log = ActivityLog.query.filter_by(logID=activity_log_id).first()
+    # If no specific log id provided, pick the most recent 'pending' activity log
+    activity_log = None
+    if activity_log_id:
+        activity_log = ActivityLog.query.filter_by(logID=activity_log_id).first()
+    if not activity_log:
+        activity_log = ActivityLog.query.filter_by(status='pending').order_by(ActivityLog.dateLogged.desc()).first()
     if not activity_log:
         return None
     if activity_log.status == 'confirmed':
         return activity_log
-    staff.confirmHours(activity_log_id)
+    # confirm using the resolved activity_log id
+    staff.confirmHours(activity_log.logID)
     # Update student's total hours
     student = Student.query.filter_by(studentID=activity_log.studentID).first()
     if student:

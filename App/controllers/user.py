@@ -1,5 +1,6 @@
 from App.models import User, Student, Staff
 from App.database import db
+from sqlalchemy import insert
 
 def create_user(username, password, user_type=None):
     """Create a user. If user_type is 'student' or 'staff' create the appropriate subclass."""
@@ -24,6 +25,23 @@ def create_user(username, password, user_type=None):
         return None
 
 def create_staff(username, password):
+    existing = get_user_by_username(username)
+    if existing:
+        # If the existing user is already staff, return it
+        if existing.user_type == 'staff':
+            return existing
+        # Convert existing plain user into staff by inserting into staff table
+        try:
+            db.session.execute(insert(Staff.__table__).values(staffID=existing.userID))
+            existing.user_type = 'staff'
+            db.session.commit()
+            # Return the user as a Staff instance
+            return db.session.get(User, existing.userID)
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error converting existing user to staff: {e}")
+            return None
+    # No existing user, create new staff
     newstaff = Staff(username=username, password=password)
     try:
         db.session.add(newstaff)
@@ -35,6 +53,20 @@ def create_staff(username, password):
         return None
 
 def create_student(username, password):
+    existing = get_user_by_username(username)
+    if existing:
+        if existing.user_type == 'student':
+            return existing
+        # Convert existing plain user into student by inserting into student table
+        try:
+            db.session.execute(insert(Student.__table__).values(studentID=existing.userID, totalHours=0, points=0))
+            existing.user_type = 'student'
+            db.session.commit()
+            return db.session.get(User, existing.userID)
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error converting existing user to student: {e}")
+            return None
     newstudent = Student(username=username, password=password)
     try:
         db.session.add(newstudent)

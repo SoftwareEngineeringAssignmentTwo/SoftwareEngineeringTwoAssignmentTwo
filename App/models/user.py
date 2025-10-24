@@ -3,6 +3,7 @@ from App.database import db
 from datetime import datetime 
 import uuid   # This is used to generate unique IDs for the users
 
+
 class User(db.Model):
     __tablename__ = 'user'
     userID = db.Column(db.String, primary_key=True)

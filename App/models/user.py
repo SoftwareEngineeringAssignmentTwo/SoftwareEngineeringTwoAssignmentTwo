@@ -1,8 +1,6 @@
 from werkzeug.security import check_password_hash, generate_password_hash
-from App.database import db 
-from datetime import datetime 
-import uuid   # This is used to generate unique IDs for the users
-
+from App.database import db
+import uuid
 
 class User(db.Model):
     __tablename__ = 'user'

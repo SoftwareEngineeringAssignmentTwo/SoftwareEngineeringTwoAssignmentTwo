@@ -273,8 +273,7 @@ Authorization: Bearer <student_token>
 1. **Clone Repository**
 
    ```bash
-   git clone https://github.com/<your-repo>/student-incentive-system.git
-   cd student-incentive-system
+   git clone https://github.com/SoftwareEngineeringAssignmentTwo/SoftwareEngineeringTwoAssignmentTwo.git
    ```
 
 2. **Install Dependencies**
@@ -286,9 +285,7 @@ Authorization: Bearer <student_token>
 3. **Initialize Database**
 
    ```bash
-   flask db init
-   flask db migrate
-   flask db upgrade
+   flask init
    ```
 
 4. **Run Server**

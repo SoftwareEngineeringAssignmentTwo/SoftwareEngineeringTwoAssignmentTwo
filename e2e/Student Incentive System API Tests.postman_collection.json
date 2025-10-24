@@ -1,0 +1,1866 @@
+{
+	"info": {
+		"_postman_id": "8ef706c7-efc1-49e2-b406-1c2028367958",
+		"name": "Student Incentive System API Tests",
+		"description": "Automated API tests for the Student Incentive System. Run these against [http://127.0.0.1:8080](http://127.0.0.1:8080)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42003110"
+	},
+	"item": [
+		{
+			"name": "Create staff user (sally)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Create staff returns 201', function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{staff_user}}\",\r\n    \"password\": \"{{staff_pass}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/staff",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"staff"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create staff user (sally)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{staff_user}}\",\r\n    \"password\": \"{{staff_pass}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/staff",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"staff"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:20:57 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "97",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Staff sally successfully created with id 389688bf-53f5-4ac8-ad93-9e11b85f47e3\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create student user (student1)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Create student returns 200 or 201', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{student_user}}\",\r\n    \"password\": \"{{student_pass}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/students",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"students"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create student user (student1)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{student_user}}\",\r\n    \"password\": \"{{student_pass}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/students",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"students"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:24:12 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "102",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Student student1 successfully created with id a2924674-1b22-41d5-b6d6-a97ae1891476\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Staff login (get token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Login returns 200 and token', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var json = pm.response.json();",
+							"    pm.expect(json).to.have.property('access_token');",
+							"    pm.collectionVariables.set('access_token', json.access_token);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{staff_user}}\",\r\n    \"password\": \"{{staff_pass}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Staff login (get token)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{staff_user}}\",\r\n    \"password\": \"{{staff_pass}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:26:04 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "336",
+							"type": "text"
+						},
+						{
+							"key": "Set-Cookie",
+							"value": "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MTI4MzU2NCwianRpIjoiZWI1YjRhNDEtMTVlOS00MzA4LTg5ZDQtYTgwY2NjMTI5ZjlkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjM4OTY4OGJmLTUzZjUtNGFjOC1hZDkzLTllMTFiODVmNDdlMyIsIm5iZiI6MTc2MTI4MzU2NCwiZXhwIjoxNzYxMjg0NDY0fQ.5o1u2HJ1fdGg5aK4Fna5_GqXCY_u4TQwY1Cejf9Bd6k; Secure; HttpOnly; Path=/",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2MTI4MzU2NCwianRpIjoiZWI1YjRhNDEtMTVlOS00MzA4LTg5ZDQtYTgwY2NjMTI5ZjlkIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjM4OTY4OGJmLTUzZjUtNGFjOC1hZDkzLTllMTFiODVmNDdlMyIsIm5iZiI6MTc2MTI4MzU2NCwiZXhwIjoxNzYxMjg0NDY0fQ.5o1u2HJ1fdGg5aK4Fna5_GqXCY_u4TQwY1Cejf9Bd6k\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Log hours for student (logged)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Log hours returns 201 and message', function () {",
+							"    pm.response.to.have.status(201);",
+							"    var json = pm.response.json();",
+							"    pm.expect(json).to.have.property('message');",
+							"// extract logID from message text if present",
+							"    var m = json.message.match(/log ID (\\S+)/);",
+							"    if (m) pm.collectionVariables.set('last_log_id', m[1]);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"hours\": 5,\r\n    \"activity\": \"Community Service\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/log_hours",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"log_hours"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Log hours for student (logged)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"hours\": 5,\r\n    \"activity\": \"Community Service\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/log_hours",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"log_hours"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:28:33 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "135",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Logged 5 hours for student ID a2924674-1b22-41d5-b6d6-a97ae1891476 with log ID 1ee3bdc3-c632-4cdc-ad92-6f276265cca4\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Request confirmation (student requests)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Request confirmation returns 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var json = pm.response.json();",
+							"    pm.expect(json).to.have.property('message');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"activity_log_id\": \"{{last_log_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/request_confirmation",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"request_confirmation"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Request confirmation (student requests)",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"activity_log_id\": \"{{last_log_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/request_confirmation",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"request_confirmation"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:29:27 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "90",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Requested confirmation for log ID 1ee3bdc3-c632-4cdc-ad92-6f276265cca4\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Staff confirm hours (approve)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Confirm returns 200 and message', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var json = pm.response.json();",
+							"    pm.expect(json).to.have.property('message');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"activity_log_id\": \"{{last_log_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/staff/confirm_hours",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"staff",
+						"confirm_hours"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Staff confirm hours (approve)",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"activity_log_id\": \"{{last_log_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/staff/confirm_hours",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"staff",
+								"confirm_hours"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:30:06 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "83",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Confirmed hours for log ID 1ee3bdc3-c632-4cdc-ad92-6f276265cca4\"\n}"
+				}
+			]
+		},
+		{
+			"name": "View accolades (student)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('View accolades returns 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var json = pm.response.json();",
+							"    pm.expect(json).to.have.property('total_hours');",
+							"    pm.expect(json).to.have.property('accolades');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/accolades/{{student_user}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"accolades",
+						"{{student_user}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "View accolades (student)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/accolades/{{student_user}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"accolades",
+								"{{student_user}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:30:46 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "70",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accolades\": [\n        \"10 Hour Milestone\"\n    ],\n    \"total_hours\": 10\n}"
+				}
+			]
+		},
+		{
+			"name": "View leaderboard (public)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Leaderboard returns 200 and array', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var json = pm.response.json();",
+							"    pm.expect(json).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/leaderboard",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"leaderboard"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "View leaderboard (public)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/leaderboard",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"leaderboard"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:31:14 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "139",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"accolades\": 1,\n        \"studentID\": \"a2924674-1b22-41d5-b6d6-a97ae1891476\",\n        \"total_hours\": 10,\n        \"username\": \"student1\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Reject hours (create new log then reject)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Created log for reject flow', function () {",
+							"    pm.response.to.have.status(201);",
+							"    var json = pm.response.json();",
+							"    var m = json.message.match(/log ID (\\S+)/);",
+							"    if (m) pm.collectionVariables.set('reject_log_id', m[1]);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"hours\": 3,\r\n    \"activity\": \"Extra Activity\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/log_hours",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"log_hours"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Reject hours (create new log then reject)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"hours\": 3,\r\n    \"activity\": \"Extra Activity\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/log_hours",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"log_hours"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:32:19 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "135",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Logged 3 hours for student ID a2924674-1b22-41d5-b6d6-a97ae1891476 with log ID 9e28515d-1e8f-43f3-9b9b-7fbd743361a7\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Request confirmation for reject log",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Request confirmation for reject log returns 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"activity_log_id\": \"{{reject_log_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/request_confirmation",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"request_confirmation"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Request confirmation for reject log",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"student_username\": \"{{student_user}}\",\r\n    \"activity_log_id\": \"{{reject_log_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/request_confirmation",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"request_confirmation"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:33:18 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "90",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Requested confirmation for log ID 9e28515d-1e8f-43f3-9b9b-7fbd743361a7\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Staff reject hours (reject)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Reject returns 200 and message', function () {",
+							"    pm.response.to.have.status(200);",
+							"    var json = pm.response.json();",
+							"    pm.expect(json).to.have.property('message');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"activity_log_id\": \"{{reject_log_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/staff/reject_hours",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"staff",
+						"reject_hours"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Staff reject hours (reject)",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"activity_log_id\": \"{{reject_log_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/staff/reject_hours",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"staff",
+								"reject_hours"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:34:29 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "82",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Rejected hours for log ID 9e28515d-1e8f-43f3-9b9b-7fbd743361a7\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Update leaderboard (admin action)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Update leaderboard returns 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/update_leaderboard",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"update_leaderboard"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update leaderboard (admin action)",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/update_leaderboard",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"update_leaderboard"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:35:33 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "52",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Leaderboard updated successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Edge: Login with wrong password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Bad login returns 401', function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{staff_user}}\",\r\n    \"password\": \"wrongpass\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Edge: Login with wrong password",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{staff_user}}\",\r\n    \"password\": \"wrongpass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:36:06 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "50",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"bad username or password given\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Edge: Create duplicate student (should return existing)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Duplicate create returns 200 or 400 gracefully', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,201,400]);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{student_user}}\",\r\n    \"password\": \"{{student_pass}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/students",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"students"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Edge: Create duplicate student (should return existing)",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{student_user}}\",\r\n    \"password\": \"{{student_pass}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/students",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"students"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:36:48 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "102",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Student student1 successfully created with id a2924674-1b22-41d5-b6d6-a97ae1891476\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Edge: Confirm non-existent log",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Confirm non-existent log returns 400 or 404', function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([400,404]);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"activity_log_id\": \"non-existent-id\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/staff/confirm_hours",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"staff",
+						"confirm_hours"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Edge: Confirm non-existent log",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"staff_username\": \"{{staff_user}}\",\r\n    \"activity_log_id\": \"non-existent-id\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/staff/confirm_hours",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"staff",
+								"confirm_hours"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "JSON",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.1.3 Python/3.10.11",
+							"type": "text"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 24 Oct 2025 05:37:45 GMT",
+							"type": "text"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"type": "text"
+						},
+						{
+							"key": "Content-Length",
+							"value": "41",
+							"type": "text"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"type": "text"
+						},
+						{
+							"key": "Connection",
+							"value": "close",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Failed to confirm hours\"\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://127.0.0.1:8080"
+		},
+		{
+			"key": "admin_user",
+			"value": "bob"
+		},
+		{
+			"key": "admin_pass",
+			"value": "bobpass"
+		},
+		{
+			"key": "staff_user",
+			"value": "sally"
+		},
+		{
+			"key": "staff_pass",
+			"value": "sallypass"
+		},
+		{
+			"key": "student_user",
+			"value": "student1"
+		},
+		{
+			"key": "student_pass",
+			"value": "studentpass"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "last_log_id",
+			"value": ""
+		},
+		{
+			"key": "reject_log_id",
+			"value": ""
+		}
+	]
+}

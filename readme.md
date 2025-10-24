@@ -23,7 +23,7 @@ This refactor transitions the CLI version into a structured **MVC Flask REST API
 
 ---
 
-##⚙️ System Architecture
+## ⚙️ System Architecture
 
 ### **1. Models (Data Layer)**
 Implements database entities using **SQLAlchemy ORM**:
@@ -59,7 +59,7 @@ All endpoints follow `/api/...` format and require JWT authentication where appl
 Implemented using **Flask-JWT-Extended**.
 
 ### Workflow:
-1. User logs in using `/api/auth/login` with valid credentials.  
+1. User logs in using `/api/login` with valid credentials.  
 2. The server responds with an **access token (JWT)**.  
 3. The token must be included in the `Authorization` header for all subsequent requests.  
 
@@ -74,24 +74,41 @@ Authorization: Bearer <access_token>
 
 ## 🧱 REST API Endpoints & Examples
 
-### 1️⃣ Register a User
-**POST** `/api/auth/register`
+### 1️⃣ Register a User (Staff)
+**POST** `/api/staff`
 
 **Request:**
 ```json
 {
-  "username": "student1",
-  "password": "mypassword",
-  "user_type": "student"
+  "username": "sally",
+  "password": "sallypass"
 }
-````
+```
 
 **Response:**
 
 ```json
 {
-  "message": "User student1 registered successfully",
-  "user_type": "student"
+  "message": "Staff sally successfully created with id ..."
+}
+```
+
+### 1️⃣b Register a User (Student)
+**POST** `/api/student`
+
+**Request:**
+```json
+{
+  "username": "student1",
+  "password": "studentpass"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Student student1 successfully created with id ..."
 }
 ```
 
@@ -99,7 +116,7 @@ Authorization: Bearer <access_token>
 
 ### 2️⃣ Login and Retrieve JWT Token
 
-**POST** `/api/auth/login`
+**POST** `/api/login`
 
 **Request:**
 
@@ -294,38 +311,62 @@ Authorization: Bearer <student_token>
    flask run
    ```
 
-   API will be available at: `http://127.0.0.1:5000/`
+   API will be available at: `http://127.0.0.1:8080/`
 
 ---
 
 ## 🧪 Testing Implementation
 
-Testing is implemented using both `pytest` and Python’s built-in `unittest` framework.
+Testing is implemented using both `pytest` and Python's built-in `unittest` framework.
 
 ### **Unit Tests**
 
-Located in `tests/`:
+Located in `App/tests/`:
 
-* User creation and JSON serialization
-* Staff hour logging
-* Accolade creation
-* Leaderboard updates
+**Modules Tested in Isolation:**
+* User model creation and validation
+* Password hashing and verification
+* JSON serialization methods
+* Staff hour logging controller
+* Student confirmation request controller
+* Accolade creation logic
+* Leaderboard calculation
 
 ### **Integration Tests**
 
-* Student → staff confirmation workflow
-* Accolade awarding at milestones
-* Leaderboard ranking
-* JWT-based authentication
-* Rejection process handling
+**End-to-End Workflows Tested:**
+* Complete student-staff confirmation workflow
+* Accolade awarding at 10, 25, 50 hour milestones
+* Leaderboard ranking and updates
+* JWT-based authentication and authorization
+* Hour rejection and status transitions
+* Multi-user interaction scenarios
 
-**Run tests:**
+### **API Tests (Postman/Newman)**
+
+**Automated Collection Tests:**
+* User registration endpoints
+* Login and token generation
+* Protected route authorization
+* Hour logging API
+* Confirmation workflow API
+* Leaderboard retrieval
+* Accolade viewing
+* Edge cases and error handling
+
+**Run Unit & Integration Tests:**
 
 ```bash
 pytest -v
 ```
 
-Example Unit Test:
+**Run API Tests:**
+
+```bash
+newman run "e2e/Student Incentive System API Tests.postman_collection.json" -e "e2e/config.json" --insecure --color on
+```
+
+**Example Unit Test:**
 
 ```python
 def test_staff_log_hours(self):
@@ -359,7 +400,7 @@ A **Postman collection** is provided:
 To use:
 
 1. Import into Postman.
-2. Obtain a token via `/api/auth/login`.
+2. Obtain a token via `/api/login`.
 3. Add this header to requests:
 
    ```
@@ -401,7 +442,7 @@ Only **confirmed** hours count toward:
 
 ## 🧾 Technical Stack
 
-* **Language:** Python 3.9+
+* **Language:** Python 3.9 or 3.10
 * **Framework:** Flask
 * **Database:** SQLite (SQLAlchemy ORM)
 * **Authentication:** Flask-JWT-Extended
@@ -412,12 +453,12 @@ Only **confirmed** hours count toward:
 
 ## 🧍 Contributors
 
-| Name            |
-| ----------------| 
-| Nie-l Constance | 
-| Allin Ramjit    | 
-| Rana Salim      |
-| Satyam Mahadeo  |
+| Name           |
+|----------------|
+| Nie-l Constance |
+| Allin Ramjit   |
+| Rana Salim     |
+| Satyam Mahadeo |
 ---
 
 ## 🙏 Acknowledgements
